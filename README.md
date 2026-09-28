@@ -42,10 +42,10 @@ demo/           optional notes demo
 
 ## Starting clean
 
-The notes demo is self-contained. To remove it:
+Both the demo and the database are optional. The lines to remove are marked with comments in `server.js`.
 
-1. Delete the `demo/` folder.
-2. Delete the two lines marked `// demo` in `server.js`.
+- **No demo:** delete the `demo/` folder and the two lines marked `// demo`.
+- **No database:** remove the demo first (it uses the database), then delete `db.js` and the line marked `// db`.
 
 ## Adding a table and a route
 

@@ -1,5 +1,5 @@
 import { join, sep } from "node:path";
-import { db } from "./db.js";
+import { db } from "./db.js"; // db
 import demo from "./demo/notes.js"; // demo
 
 const PUBLIC = join(import.meta.dir, "public");
