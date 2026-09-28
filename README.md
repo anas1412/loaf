@@ -82,6 +82,20 @@ It lists all 35 daisyUI themes, grouped into light and dark, and remembers each 
 
 Visitors can still switch with the picker. Use daisyUI's color classes (`bg-base-100`, `text-primary`, `btn-secondary`) rather than fixed colors like `bg-white`, so your page follows every theme.
 
+**Colors in your own CSS.** daisyUI's color classes like `text-primary`, `bg-base-200` and `border-base-300` work in your HTML, with two limits when everything comes from the CDN:
+
+- Only shades in steps of 10 exist: `text-base-content/70` works, `text-base-content/75` doesn't. Some combinations, like `ring-base-300`, don't exist at all. A missing class silently does nothing.
+- Tailwind's `@apply` doesn't know daisyUI's classes and stops the whole style block with an error.
+
+In your own CSS, use daisyUI's variables instead, so the color still follows the theme:
+
+```css
+.note {
+  color: var(--color-primary);
+  background: color-mix(in oklab, var(--color-base-content) 5%, transparent);
+}
+```
+
 ## Saving data without writing a backend
 
 Load `loaf.js` before Alpine, then use `collection('name')` on any element. The name can be anything: it's created the first time you save to it.
