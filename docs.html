@@ -76,6 +76,7 @@
 <li><a href="#data-api">The data API</a></li>
 <li><a href="#routes">Your own routes</a></li>
 <li><a href="#starting-clean">Starting clean</a></li>
+<li><a href="#ai">Using with AI assistants</a></li>
 <li><a href="#scripts">Scripts and settings</a></li>
 <li><a href="#production">Going to production</a></li>
         </ul>
@@ -96,7 +97,8 @@ bun dev</code></pre></figure>
   demo.html     optional todo demo
 api/            your own routes, one file per route
 server.js       the Loaf engine
-db.js           the database and the automatic data API</code></pre></figure>
+db.js           the database and the automatic data API
+.claude/skills/ guides for AI assistants</code></pre></figure>
 <p>Most apps only ever touch <code>public/</code>. Reach for <code>api/</code> when you need custom logic.</p>
 </section>
 <section id="pages" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Pages</h2>
@@ -169,6 +171,7 @@ export const POST = async (req) =&gt; {
   const body = await req.json();
   return Response.json({ id: req.params.id, received: body }, { status: 201 });
 };</code></pre></figure>
+<p>After adding a new file in <code>api/</code>, restart <code>bun dev</code>: it reloads on changes to existing files but doesn't notice new ones.</p>
 <p>Your routes win over the data API when both match the same URL. To use the database directly, import it:</p>
 <figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">api/count.js → /api/count</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>import { db } from &quot;../db.js&quot;;
 
@@ -182,6 +185,16 @@ export const GET = () =&gt; Response.json(db.query(&quot;SELECT COUNT(*) AS coun
   <li><strong>No example route:</strong> delete <code>api/hello.js</code>.</li>
   <li><strong>No database:</strong> delete <code>db.js</code> and the lines marked <code>// db</code> in <code>server.js</code>. <code>collection()</code> stops working, but pages and <code>api/</code> routes keep working.</li>
 </ul>
+</section>
+<section id="ai" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Using with AI assistants</h2>
+<p>Loaf ships two <a class="link link-primary" href="https://docs.claude.com/en/docs/claude-code/skills">Claude Code skills</a> in <code>.claude/skills/</code>, so an AI assistant working in your project knows how Loaf works:</p>
+<ul class="my-4 list-disc space-y-2 pl-5">
+  <li><code>loaf</code>: the rules of this project: no build step, <code>collection()</code>, <code>api/</code> routes, themes and the CDN limits.</li>
+  <li><code>daisyui</code>: daisyUI's official component reference, copied from <a class="link link-primary" href="https://daisyui.com/llms.txt">daisyui.com/llms.txt</a> (MIT, by the daisyUI authors).</li>
+</ul>
+<p>To update the daisyUI skill:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>curl -sL https://daisyui.com/llms.txt -o .claude/skills/daisyui/SKILL.md</code></pre></figure>
+<p>Not using an AI assistant? Delete <code>.claude/</code>.</p>
 </section>
 <section id="scripts" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Scripts and settings</h2>
 <div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>bun dev</code></td><td class="align-top">start with auto-restart on save</td></tr><tr><td class="align-top"><code>bun start</code></td><td class="align-top">start for production</td></tr><tr><td class="align-top"><code>bun test</code></td><td class="align-top">run tests</td></tr></tbody></table></div>
