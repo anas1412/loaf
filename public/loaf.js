@@ -2,6 +2,31 @@
 //   <script src="/loaf.js"></script>
 //   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
 
+// Themes: <select x-data="themePicker"></select> lets visitors pick a DaisyUI theme.
+// Their choice is remembered. Without one, the page's own data-theme is used,
+// or light/dark following the device setting.
+const THEMES = {
+  Light: ["light", "acid", "autumn", "bumblebee", "caramellatte", "cmyk", "corporate", "cupcake", "cyberpunk", "emerald", "fantasy", "garden", "lemonade", "lofi", "nord", "pastel", "retro", "silk", "valentine", "winter", "wireframe"],
+  Dark: ["dark", "abyss", "aqua", "black", "business", "coffee", "dim", "dracula", "forest", "halloween", "luxury", "night", "sunset", "synthwave"],
+};
+const pageTheme = document.documentElement.dataset.theme;
+const systemDark = matchMedia("(prefers-color-scheme: dark)");
+
+function savedTheme() {
+  try {
+    return localStorage.getItem("loaf-theme");
+  } catch {
+    return null;
+  }
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = savedTheme() ?? pageTheme ?? (systemDark.matches ? "dark" : "light");
+}
+
+applyTheme();
+systemDark.addEventListener("change", applyTheme);
+
 // Calls your API and returns the JSON. Throws with the server's message if the request fails.
 async function api(method, url, body) {
   const res = await fetch(url, {
@@ -15,6 +40,27 @@ async function api(method, url, body) {
 }
 
 document.addEventListener("alpine:init", () => {
+  Alpine.data("themePicker", () => ({
+    init() {
+      const select = this.$el;
+      select.add(new Option(pageTheme ? `Default (${pageTheme})` : "System", ""));
+      for (const [label, names] of Object.entries(THEMES)) {
+        const group = document.createElement("optgroup");
+        group.label = label;
+        for (const name of names) group.append(new Option(name[0].toUpperCase() + name.slice(1), name));
+        select.append(group);
+      }
+      select.value = savedTheme() ?? "";
+      select.addEventListener("change", () => {
+        try {
+          if (select.value) localStorage.setItem("loaf-theme", select.value);
+          else localStorage.removeItem("loaf-theme");
+        } catch {}
+        applyTheme();
+      });
+    },
+  }));
+
   // x-data="collection('todos')" gives you items, add(), update() and remove() for /api/todos.
   Alpine.data("collection", (name) => ({
     items: [],

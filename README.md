@@ -12,6 +12,7 @@
 
 - **Zero setup**: no accounts, no database server, no `.env` required.
 - **Zero build**: the HTML you write is what the browser gets.
+- **35 themes**: daisyUI components and a theme picker, light and dark, out of the box.
 - **Zero dependencies**: Bun ships the server, the database, the watcher and the test runner.
 - **No backend code needed**: save and load data straight from HTML. Write routes only when you want custom logic.
 
@@ -32,7 +33,7 @@ Open http://localhost:3000. The todo demo is at http://localhost:3000/demo.
 ```
 public/         your pages, images and scripts
   index.html    the home page
-  loaf.js       frontend helper for Alpine
+  loaf.js       frontend helper: collection() and the theme picker
   demo.html     optional todo demo
 api/            your own routes, one file per route
 server.js       the Loaf engine
@@ -49,7 +50,37 @@ Every file in `public/` is served as-is. HTML pages get clean URLs:
 | `public/about.html`       | `/about` |
 | `public/blog/index.html`  | `/blog`  |
 
-Pages use [Alpine.js](https://alpinejs.dev) for interactivity and [Tailwind CSS](https://tailwindcss.com) for styling. Both load from a CDN, so there's nothing to install. Copy the `<head>` from `public/index.html` into new pages.
+Pages use [Alpine.js](https://alpinejs.dev) for interactivity, and [Tailwind CSS](https://tailwindcss.com) with [daisyUI](https://daisyui.com) for styling. All three load from a CDN, so there's nothing to install. Copy the `<head>` from `public/index.html` into new pages.
+
+## Styling and themes
+
+daisyUI gives you ready-made components, so a button is just `class="btn btn-primary"`:
+
+```html
+<button class="btn btn-primary">Save</button>
+<input class="input" placeholder="Your name">
+<div class="card bg-base-100 shadow-sm">
+  <div class="card-body">A card</div>
+</div>
+```
+
+Browse all components at [daisyui.com/components](https://daisyui.com/components/). Tailwind classes like `mt-4` or `flex` work alongside them.
+
+**Theme picker.** Put this anywhere, for example in your navbar:
+
+```html
+<select x-data="themePicker" class="select select-sm" aria-label="Theme"></select>
+```
+
+It lists all 35 daisyUI themes, grouped into light and dark, and remembers each visitor's choice. It needs `loaf.js`.
+
+**Default theme.** Without a choice, pages follow the device's light or dark mode. To use one theme by default, set it on the `<html>` tag:
+
+```html
+<html lang="en" data-theme="coffee">
+```
+
+Visitors can still switch with the picker. Use daisyUI's color classes (`bg-base-100`, `text-primary`, `btn-secondary`) rather than fixed colors like `bg-white`, so your page follows every theme.
 
 ## Saving data without writing a backend
 
@@ -155,7 +186,7 @@ Set these in the environment or in a `.env` file:
 
 ## Going to production
 
-The Tailwind CDN build compiles styles in the browser. That's fine for small apps and prototypes. When you outgrow it, switch to the [Tailwind CLI](https://tailwindcss.com/docs/installation/tailwind-cli) and serve the generated CSS file from `public/`.
+The Tailwind CDN build compiles styles in the browser, and the daisyUI CDN file includes every component. That's fine for small apps and prototypes. When you outgrow it, switch to the [Tailwind CLI](https://tailwindcss.com/docs/installation/tailwind-cli) with the [daisyUI plugin](https://daisyui.com/docs/install/) and serve the generated CSS file from `public/`.
 
 Back up `loaf.db`. That file is your whole database.
 
