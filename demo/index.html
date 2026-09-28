@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notes · Loaf</title>
+    <link rel="icon" href="/favicon.svg" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #d9913b;
+        --color-background: #1e1612;
+        --color-card: #2d221b;
+        --color-text: #f7f0e6;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-background font-sans text-text">
+    <main x-data="notesDemo" class="mx-auto max-w-md px-4 py-12">
+      <h1 class="mb-6 text-3xl font-bold text-primary">Notes</h1>
+
+      <form @submit.prevent="add" class="mb-6 flex gap-2">
+        <input
+          x-model="text"
+          required
+          maxlength="500"
+          placeholder="Write a note…"
+          aria-label="New note"
+          class="flex-1 rounded-lg bg-card px-3 py-2 outline-none focus:ring-2 focus:ring-primary"
+        />
+        <button class="rounded-lg bg-primary px-4 py-2 font-semibold text-background hover:opacity-90">Add</button>
+      </form>
+
+      <p x-show="!notes.length" class="text-text/60">No notes yet.</p>
+
+      <ul class="space-y-2">
+        <template x-for="note in notes" :key="note.id">
+          <li class="flex items-center gap-3 rounded-lg bg-card px-3 py-2">
+            <span x-text="note.text" class="flex-1 break-words"></span>
+            <button @click="remove(note.id)" aria-label="Delete note" class="text-text/60 hover:text-red-400">✕</button>
+          </li>
+        </template>
+      </ul>
+    </main>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("notesDemo", () => ({
+          notes: [],
+          text: "",
+
+          async init() {
+            this.notes = await (await fetch("/api/notes")).json();
+          },
+
+          async add() {
+            const text = this.text;
+            this.text = "";
+            const res = await fetch("/api/notes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text }),
+            });
+            if (!res.ok) return (this.text = text);
+            this.notes.unshift(await res.json());
+          },
+
+          async remove(id) {
+            await fetch(`/api/notes/${id}`, { method: "DELETE" });
+            this.notes = this.notes.filter((note) => note.id !== id);
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>

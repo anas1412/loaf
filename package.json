@@ -1,20 +1,10 @@
 {
-  "name": "meta-boilerplate",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "name": "loaf",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "mongoose": "^8.9.4"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.6"
-  },
-  "author": "",
-  "license": "ISC"
+    "dev": "bun --watch server.js",
+    "start": "bun server.js",
+    "test": "bun test"
+  }
 }
