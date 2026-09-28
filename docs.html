@@ -120,6 +120,17 @@ db.js           the database and the automatic data API</code></pre></figure>
 <p>Without a choice, pages follow the device's light or dark mode. To use one theme by default, set it on the <code>&lt;html&gt;</code> tag:</p>
 <figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;html lang=&quot;en&quot; data-theme=&quot;coffee&quot;&gt;</code></pre></figure>
 <p>Visitors can still switch with the picker. Use daisyUI's color classes (<code>bg-base-100</code>, <code>text-primary</code>, <code>btn-secondary</code>) rather than fixed colors like <code>bg-white</code>, so your page follows every theme.</p>
+<h3 class="mt-8 mb-2 text-xl font-semibold">Colors in your own CSS</h3>
+<p>daisyUI's color classes like <code>text-primary</code>, <code>bg-base-200</code> and <code>border-base-300</code> work in your HTML, with two limits when everything comes from the CDN:</p>
+<ul class="my-4 list-disc space-y-2 pl-5">
+  <li>Only shades in steps of 10 exist: <code>text-base-content/70</code> works, <code>text-base-content/75</code> doesn't. Some combinations, like <code>ring-base-300</code>, don't exist at all. A missing class silently does nothing.</li>
+  <li>Tailwind's <code>@apply</code> doesn't know daisyUI's classes and stops the whole style block with an error.</li>
+</ul>
+<p>In your own CSS, use daisyUI's variables instead, so the color still follows the theme:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>.note {
+  color: var(--color-primary);
+  background: color-mix(in oklab, var(--color-base-content) 5%, transparent);
+}</code></pre></figure>
 </section>
 <section id="saving-data" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Saving data</h2>
 <p>Load <code>loaf.js</code> before Alpine, then use <code>collection(&#x27;name&#x27;)</code> on any element. The name can be anything: it's created the first time you save to it. No backend code needed.</p>
