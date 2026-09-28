@@ -38,6 +38,7 @@ public/         your pages, images and scripts
 api/            your own routes, one file per route
 server.js       the Loaf engine
 db.js           the database and the automatic data API
+.claude/skills/ guides for AI assistants
 ```
 
 ## Pages
@@ -167,6 +168,8 @@ export const POST = async (req) => {
 };
 ```
 
+After adding a new file in `api/`, restart `bun dev`: it reloads on changes to existing files but doesn't notice new ones.
+
 Your routes win over the data API when both match the same URL. To use the database directly, import it:
 
 ```js
@@ -184,6 +187,21 @@ Everything optional can be deleted:
 - **No demo:** delete `public/demo.html`.
 - **No example route:** delete `api/hello.js`.
 - **No database:** delete `db.js` and the lines marked `// db` in `server.js`. `collection()` stops working, but pages and `api/` routes keep working.
+
+## Using with AI assistants
+
+Loaf ships two [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) in `.claude/skills/`, so an AI assistant working in your project knows how Loaf works:
+
+- `loaf`: the rules of this project: no build step, `collection()`, `api/` routes, themes and the CDN limits.
+- `daisyui`: daisyUI's official component reference, copied from [daisyui.com/llms.txt](https://daisyui.com/llms.txt) (MIT, by the daisyUI authors).
+
+To update the daisyUI skill:
+
+```bash
+curl -sL https://daisyui.com/llms.txt -o .claude/skills/daisyui/SKILL.md
+```
+
+Not using an AI assistant? Delete `.claude/`.
 
 ## Scripts
 
