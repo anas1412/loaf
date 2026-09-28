@@ -58,7 +58,7 @@
 
         <figure class="min-w-0">
           <pre class="overflow-x-auto rounded-xl bg-[#17110d] p-6 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>import { join, sep } from "node:path";
-import { db } from "./db.js";
+<span class="text-butter">import { db } from "./db.js"; // db</span>
 <span class="text-crust">import demo from "./demo/notes.js"; // demo</span>
 
 const PUBLIC = join(import.meta.dir, "public");
@@ -87,7 +87,7 @@ export const server = Bun.serve({
   },
 });</code></pre>
           <figcaption class="mt-3 text-sm text-husk">
-            This is the entire server. The two <span class="text-crust">gold lines</span> plug in the notes demo.
+            This is the entire server. The <span class="text-butter">butter line</span> opens the database and the two <span class="text-crust">crust lines</span> plug in the notes demo. Both are optional.
           </figcaption>
         </figure>
       </section>
@@ -101,7 +101,7 @@ export const server = Bun.serve({
           </div>
           <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
             <dt class="font-mono text-butter">db.js</dt>
-            <dd class="text-husk">Opens <code class="font-mono text-flour">loaf.db</code>. That one file is your whole database.</dd>
+            <dd class="text-husk">Opens <code class="font-mono text-flour">loaf.db</code>. That one file is your whole database. Don&#39;t need one? Delete <code class="font-mono text-flour">db.js</code> and the butter line.</dd>
           </div>
           <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
             <dt class="font-mono text-butter">public/</dt>
@@ -109,7 +109,7 @@ export const server = Bun.serve({
           </div>
           <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
             <dt class="font-mono text-butter">demo/</dt>
-            <dd class="text-husk">A small notes app that shows the database, the API and the page working together. Delete the folder and the two gold lines to start clean.</dd>
+            <dd class="text-husk">A small notes app that shows the database, the API and the page working together. Delete the folder and the two crust lines to start clean.</dd>
           </div>
         </dl>
       </section>
