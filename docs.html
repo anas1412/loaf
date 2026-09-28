@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Docs · Loaf</title>
+    <meta name="description" content="How to use Loaf: pages, saving data from HTML, the data API and your own routes." />
+    <link rel="icon" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-rye: #1e1612;
+        --color-tin: #2d221b;
+        --color-crust: #d9913b;
+        --color-butter: #f2d07a;
+        --color-flour: #f7f0e6;
+        --color-husk: #a8998a;
+        --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+      a, button { @apply rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crust; }
+      .prose-loaf :where(p, li) { @apply leading-relaxed text-husk; }
+      .prose-loaf :where(p code, li code, td code) { @apply font-mono text-[0.9em] text-butter; }
+      .prose-loaf :where(strong) { @apply font-semibold text-flour; }
+      .prose-loaf :where(a:not(.plain)) { @apply text-flour underline decoration-crust underline-offset-4 hover:text-crust; }
+    </style>
+  </head>
+  <body class="bg-rye font-sans text-flour antialiased">
+    <header class="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 sm:px-8">
+      <a href="./" class="flex items-center gap-3 text-xl font-bold">
+        <img src="logo.svg" alt="" class="size-9" />
+        Loaf
+      </a>
+      <nav aria-label="Main" class="flex gap-6">
+        <a href="./" class="text-husk hover:text-flour">Home</a>
+        <a href="docs.html" class="text-flour" aria-current="page">Docs</a>
+        <a href="https://github.com/anas1412/loaf" class="text-husk hover:text-flour">GitHub</a>
+      </nav>
+    </header>
+    <div
+      class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 pt-6 pb-16 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)]"
+    >
+      <nav aria-label="Docs" class="lg:sticky lg:top-8 lg:self-start">
+        <p class="mb-2 font-semibold">On this page</p>
+        <ul class="columns-2 text-[15px] sm:columns-3 lg:columns-1">
+          <li><a href="#quick-start" class="plain block py-1 text-husk hover:text-flour">Quick start</a></li>
+<li><a href="#structure" class="plain block py-1 text-husk hover:text-flour">Project structure</a></li>
+<li><a href="#pages" class="plain block py-1 text-husk hover:text-flour">Pages</a></li>
+<li><a href="#saving-data" class="plain block py-1 text-husk hover:text-flour">Saving data</a></li>
+<li><a href="#data-api" class="plain block py-1 text-husk hover:text-flour">The data API</a></li>
+<li><a href="#routes" class="plain block py-1 text-husk hover:text-flour">Your own routes</a></li>
+<li><a href="#starting-clean" class="plain block py-1 text-husk hover:text-flour">Starting clean</a></li>
+<li><a href="#scripts" class="plain block py-1 text-husk hover:text-flour">Scripts and settings</a></li>
+<li><a href="#production" class="plain block py-1 text-husk hover:text-flour">Going to production</a></li>
+        </ul>
+      </nav>
+      <main class="prose-loaf min-w-0 max-w-3xl">
+        <h1 class="mb-10 text-5xl font-extrabold tracking-tight [font-variation-settings:'opsz'_96]">Docs</h1>
+        <section id="quick-start" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Quick start</h2>
+<p>You need <a href="https://bun.sh">Bun</a> 1.2.3 or newer. Then:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>bunx degit anas1412/loaf my-app
+cd my-app
+bun dev</code></pre></figure>
+<p>Open <code>http://localhost:3000</code>. The todo demo is at <code>/demo</code>.</p>
+</section>
+<section id="structure" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Project structure</h2>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>public/         your pages, images and scripts
+  index.html    the home page
+  loaf.js       frontend helper for Alpine
+  demo.html     optional todo demo
+api/            your own routes, one file per route
+server.js       the Loaf engine
+db.js           the database and the automatic data API</code></pre></figure>
+<p>Most apps only ever touch <code>public/</code>. Reach for <code>api/</code> when you need custom logic.</p>
+</section>
+<section id="pages" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Pages</h2>
+<p>Every file in <code>public/</code> is served as-is. HTML pages get clean URLs:</p>
+<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">File</th><th class="py-2 pr-6 text-left font-semibold text-flour">URL</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>public/index.html</code></td><td class="py-2 pr-6 align-top"><code>/</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/about.html</code></td><td class="py-2 pr-6 align-top"><code>/about</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/blog/index.html</code></td><td class="py-2 pr-6 align-top"><code>/blog</code></td></tr></tbody></table></div>
+<p>Pages use <a href="https://alpinejs.dev">Alpine.js</a> for interactivity and <a href="https://tailwindcss.com">Tailwind CSS</a> for styling. Both load from a CDN, so there's nothing to install. Copy the <code>&lt;head&gt;</code> from <code>public/index.html</code> into new pages.</p>
+</section>
+<section id="saving-data" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Saving data</h2>
+<p>Load <code>loaf.js</code> before Alpine, then use <code>collection(&#x27;name&#x27;)</code> on any element. The name can be anything: it's created the first time you save to it. No backend code needed.</p>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">public/posts.html</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;div x-data=&quot;collection(&#x27;posts&#x27;)&quot;&gt;
+  &lt;form @submit.prevent=&quot;add($el)&quot;&gt;
+    &lt;input name=&quot;title&quot; required&gt;
+    &lt;button&gt;Add post&lt;/button&gt;
+  &lt;/form&gt;
+
+  &lt;template x-for=&quot;post in items&quot; :key=&quot;post.id&quot;&gt;
+    &lt;article&gt;
+      &lt;h2 x-text=&quot;post.title&quot;&gt;&lt;/h2&gt;
+      &lt;button @click=&quot;remove(post)&quot;&gt;Delete&lt;/button&gt;
+    &lt;/article&gt;
+  &lt;/template&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Inside <code>collection(&#x27;posts&#x27;)</code> you get:</p>
+<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Name</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>items</code></td><td class="py-2 pr-6 align-top">all saved records, newest first</td></tr><tr><td class="py-2 pr-6 align-top"><code>add($el)</code></td><td class="py-2 pr-6 align-top">on a <code>&lt;form&gt;</code>: saves its named inputs, then clears the form</td></tr><tr><td class="py-2 pr-6 align-top"><code>add({ title: &quot;Hi&quot; })</code></td><td class="py-2 pr-6 align-top">saves any object you pass</td></tr><tr><td class="py-2 pr-6 align-top"><code>update(item, { ... })</code></td><td class="py-2 pr-6 align-top">changes only the fields you pass, e.g. <code>{ done: true }</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>remove(item)</code></td><td class="py-2 pr-6 align-top">deletes the record</td></tr><tr><td class="py-2 pr-6 align-top"><code>loading</code></td><td class="py-2 pr-6 align-top"><code>true</code> until the first load finishes</td></tr><tr><td class="py-2 pr-6 align-top"><code>error</code></td><td class="py-2 pr-6 align-top">the last error message, or <code>null</code></td></tr></tbody></table></div>
+<p>Every record gets an <code>id</code> and a <code>created_at</code> automatically.</p>
+</section>
+<section id="data-api" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">The data API</h2>
+<p><code>collection()</code> talks to this API, and you can call it from anywhere with <code>fetch</code>:</p>
+<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Request</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>GET /api/posts</code></td><td class="py-2 pr-6 align-top">list all posts, newest first</td></tr><tr><td class="py-2 pr-6 align-top"><code>POST /api/posts</code></td><td class="py-2 pr-6 align-top">save the JSON object in the body</td></tr><tr><td class="py-2 pr-6 align-top"><code>GET /api/posts/5</code></td><td class="py-2 pr-6 align-top">get one post</td></tr><tr><td class="py-2 pr-6 align-top"><code>PATCH /api/posts/5</code></td><td class="py-2 pr-6 align-top">change the fields in the body, <code>null</code> removes one</td></tr><tr><td class="py-2 pr-6 align-top"><code>DELETE /api/posts/5</code></td><td class="py-2 pr-6 align-top">delete it</td></tr></tbody></table></div>
+<p>Everything is stored in <code>loaf.db</code>, a single SQLite file.</p>
+<div class="my-6 rounded-lg border-l-4 border-crust bg-tin/60 px-5 py-4">
+  <p><strong>Before you go public:</strong> the data API has no login. Anyone who can open your site can read, change and delete every record. That's fine on your own machine and for prototypes. For a public site, remove the <code>// db</code> lines from <code>server.js</code> and write your own routes in <code>api/</code> with the checks you need.</p>
+</div>
+</section>
+<section id="routes" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Your own routes</h2>
+<p>Every <code>.js</code> file in <code>api/</code> becomes a route. Export a function for each HTTP method:</p>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/hello.js → /api/hello</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>export const GET = () =&gt; Response.json({ message: &quot;Hello&quot; });</code></pre></figure>
+<p>Put a name in brackets for a URL parameter:</p>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/users/[id].js → /api/users/:id</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>export const GET = (req) =&gt; Response.json({ id: req.params.id });
+
+export const POST = async (req) =&gt; {
+  const body = await req.json();
+  return Response.json({ id: req.params.id, received: body }, { status: 201 });
+};</code></pre></figure>
+<p>Your routes win over the data API when both match the same URL. To use the database directly, import it:</p>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/count.js → /api/count</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>import { db } from &quot;../db.js&quot;;
+
+export const GET = () =&gt; Response.json(db.query(&quot;SELECT COUNT(*) AS count FROM records&quot;).get());</code></pre></figure>
+<p><code>db</code> is a <a href="https://bun.sh/docs/api/sqlite">bun:sqlite</a> database, so you can create your own tables too.</p>
+</section>
+<section id="starting-clean" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Starting clean</h2>
+<p>Everything optional can be deleted:</p>
+<ul class="my-4 list-disc space-y-2 pl-5">
+  <li><strong>No demo:</strong> delete <code>public/demo.html</code>.</li>
+  <li><strong>No example route:</strong> delete <code>api/hello.js</code>.</li>
+  <li><strong>No database:</strong> delete <code>db.js</code> and the lines marked <code>// db</code> in <code>server.js</code>. <code>collection()</code> stops working, but pages and <code>api/</code> routes keep working.</li>
+</ul>
+</section>
+<section id="scripts" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Scripts and settings</h2>
+<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Command</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>bun dev</code></td><td class="py-2 pr-6 align-top">start with auto-restart on save</td></tr><tr><td class="py-2 pr-6 align-top"><code>bun start</code></td><td class="py-2 pr-6 align-top">start for production</td></tr><tr><td class="py-2 pr-6 align-top"><code>bun test</code></td><td class="py-2 pr-6 align-top">run tests</td></tr></tbody></table></div>
+<p>Set these in the environment or in a <code>.env</code> file:</p>
+<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Setting</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>PORT</code></td><td class="py-2 pr-6 align-top">server port, default <code>3000</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>DB</code></td><td class="py-2 pr-6 align-top">database file, default <code>loaf.db</code>. Use <code>:memory:</code> for a throwaway one.</td></tr></tbody></table></div>
+</section>
+<section id="production" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Going to production</h2>
+<p>The Tailwind CDN build compiles styles in the browser. That's fine for small apps and prototypes. When you outgrow it, switch to the <a href="https://tailwindcss.com/docs/installation/tailwind-cli">Tailwind CLI</a> and serve the generated CSS file from <code>public/</code>.</p>
+<p>Back up <code>loaf.db</code>. That file is your whole database.</p>
+</section>
+      </main>
+    </div>
+    <footer class="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 border-t border-tin px-4 py-8 text-sm text-husk sm:px-8">
+      <p>MIT licensed. Made by <a href="https://github.com/anas1412" class="text-flour hover:text-crust">anas1412</a>.</p>
+      <a href="https://github.com/anas1412/loaf" class="text-flour hover:text-crust">Source on GitHub</a>
+    </footer>
+  </body>
+</html>

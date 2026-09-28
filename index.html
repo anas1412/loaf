@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Loaf, a Bun starter</title>
-    <meta name="description" content="A zero-dependency Bun starter: Bun.serve, bun:sqlite, Alpine.js and Tailwind. No build step, no setup." />
+    <meta name="description" content="A zero-dependency Bun starter: pages, a database and an API with no build step and no setup." />
     <link rel="icon" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,6 +23,10 @@
         --font-mono: "JetBrains Mono", ui-monospace, monospace;
       }
       a, button { @apply rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crust; }
+      .prose-loaf :where(p, li) { @apply leading-relaxed text-husk; }
+      .prose-loaf :where(p code, li code, td code) { @apply font-mono text-[0.9em] text-butter; }
+      .prose-loaf :where(strong) { @apply font-semibold text-flour; }
+      .prose-loaf :where(a:not(.plain)) { @apply text-flour underline decoration-crust underline-offset-4 hover:text-crust; }
     </style>
   </head>
   <body class="bg-rye font-sans text-flour antialiased">
@@ -31,9 +35,12 @@
         <img src="logo.svg" alt="" class="size-9" />
         Loaf
       </a>
-      <a href="https://github.com/anas1412/loaf" class="text-husk hover:text-flour">GitHub</a>
+      <nav aria-label="Main" class="flex gap-6">
+        <a href="./" class="text-flour" aria-current="page">Home</a>
+        <a href="docs.html" class="text-husk hover:text-flour">Docs</a>
+        <a href="https://github.com/anas1412/loaf" class="text-husk hover:text-flour">GitHub</a>
+      </nav>
     </header>
-
     <main class="mx-auto max-w-6xl px-4 sm:px-8">
       <section class="grid grid-cols-1 items-center gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:py-20">
         <div>
@@ -41,8 +48,7 @@
             A Bun starter with nothing to install.
           </h1>
           <p class="mt-6 max-w-[34rem] text-lg leading-relaxed text-husk">
-            Bun serves your pages and keeps your data in SQLite. Alpine and Tailwind load from a CDN.
-            Clone it, run <code class="font-mono text-base text-butter">bun dev</code>, and start writing HTML.
+            Write HTML, save data from it, and let Bun handle the rest. No build step, no database server, no backend code until you want some.
           </p>
 
           <div x-data="{ copied: false, cmd: 'bunx degit anas1412/loaf my-app' }" class="mt-10 flex max-w-[34rem] items-center gap-2 rounded-lg bg-tin/60 py-2 pr-2 pl-4 ring-1 ring-tin">
@@ -53,41 +59,26 @@
               x-text="copied ? 'Copied' : 'Copy'"
             >Copy</button>
           </div>
-          <p class="mt-3 text-sm text-husk">Needs Bun 1.2.3 or newer.</p>
+          <p class="mt-3 text-sm text-husk">Needs Bun 1.2.3 or newer. Then run <code class="font-mono text-butter">bun dev</code>. <a href="docs.html" class="text-flour underline decoration-crust underline-offset-4 hover:text-crust">Read the docs</a></p>
         </div>
 
         <figure class="min-w-0">
-          <pre class="overflow-x-auto rounded-xl bg-[#17110d] p-6 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>import { join, sep } from "node:path";
-<span class="text-butter">import { db } from "./db.js"; // db</span>
-<span class="text-crust">import demo from "./demo/notes.js"; // demo</span>
+          <pre class="overflow-x-auto rounded-xl bg-[#17110d] p-6 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;div x-data=&quot;collection(&#x27;todos&#x27;)&quot;&gt;
+  &lt;form @submit.prevent=&quot;add($el)&quot;&gt;
+    &lt;input name=&quot;text&quot; required&gt;
+    &lt;button&gt;Add&lt;/button&gt;
+  &lt;/form&gt;
 
-const PUBLIC = join(import.meta.dir, "public");
-
-export const server = Bun.serve({
-  port: process.env.PORT ?? 3000,
-
-  routes: {
-<span class="text-crust">    ...demo, // demo</span>
-  },
-
-<span class="text-husk">  // Anything not matched above is a file from public/.</span>
-  async fetch(req) {
-    const { pathname } = new URL(req.url);
-    const path = join(PUBLIC, pathname === "/" ? "index.html" : pathname);
-    const file = Bun.file(path);
-    if (!path.startsWith(PUBLIC + sep) || !(await file.exists())) {
-      return new Response("Not Found", { status: 404 });
-    }
-    return new Response(file);
-  },
-
-  error(err) {
-    console.error(err);
-    return new Response("Internal Server Error", { status: 500 });
-  },
-});</code></pre>
+  &lt;template x-for=&quot;todo in items&quot; :key=&quot;todo.id&quot;&gt;
+    &lt;label&gt;
+      &lt;input type=&quot;checkbox&quot; :checked=&quot;todo.done&quot;
+             @change=&quot;update(todo, { done: $el.checked })&quot;&gt;
+      &lt;span x-text=&quot;todo.text&quot;&gt;&lt;/span&gt;
+    &lt;/label&gt;
+  &lt;/template&gt;
+&lt;/div&gt;</code></pre>
           <figcaption class="mt-3 text-sm text-husk">
-            This is the entire server. The <span class="text-butter">butter line</span> opens the database and the two <span class="text-crust">crust lines</span> plug in the notes demo. Both are optional.
+            That's all the code a todo app needs, apart from the usual &lt;head&gt;. Todos are saved to the database and survive a restart, with no server code.
           </figcaption>
         </figure>
       </section>
@@ -96,20 +87,20 @@ export const server = Bun.serve({
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">What you get</h2>
         <dl class="divide-y divide-tin">
           <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
-            <dt class="font-mono text-butter">server.js</dt>
-            <dd class="text-husk">Your routes, plus serving everything in <code class="font-mono text-flour">public/</code>.</dd>
-          </div>
-          <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
-            <dt class="font-mono text-butter">db.js</dt>
-            <dd class="text-husk">Opens <code class="font-mono text-flour">loaf.db</code>. That one file is your whole database. Don&#39;t need one? Delete <code class="font-mono text-flour">db.js</code> and the butter line.</dd>
-          </div>
-          <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
             <dt class="font-mono text-butter">public/</dt>
-            <dd class="text-husk">Plain HTML, images and scripts, served exactly as you wrote them.</dd>
+            <dd class="text-husk">Your pages. <code class="font-mono text-flour">about.html</code> is served at <code class="font-mono text-flour">/about</code>, no config.</dd>
           </div>
           <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
-            <dt class="font-mono text-butter">demo/</dt>
-            <dd class="text-husk">A small notes app that shows the database, the API and the page working together. Delete the folder and the two crust lines to start clean.</dd>
+            <dt class="font-mono text-butter">loaf.js</dt>
+            <dd class="text-husk">Add <code class="font-mono text-flour">collection('posts')</code> to any element to list, save, update and delete posts.</dd>
+          </div>
+          <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
+            <dt class="font-mono text-butter">api/</dt>
+            <dd class="text-husk">Custom logic when you need it. <code class="font-mono text-flour">api/hello.js</code> becomes <code class="font-mono text-flour">/api/hello</code>.</dd>
+          </div>
+          <div class="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
+            <dt class="font-mono text-butter">loaf.db</dt>
+            <dd class="text-husk">One SQLite file holds all your data. Don't need a database? Delete <code class="font-mono text-flour">db.js</code>.</dd>
           </div>
         </dl>
       </section>
@@ -130,13 +121,12 @@ export const server = Bun.serve({
             <p class="mt-1 text-husk">Bun already ships the server, SQLite, file watching and the test runner.</p>
           </li>
           <li>
-            <p class="text-lg font-semibold">Readable in five minutes</p>
-            <p class="mt-1 text-husk">A handful of short files. Add structure when your app needs it.</p>
+            <p class="text-lg font-semibold">No backend code</p>
+            <p class="mt-1 text-husk">Save and load data straight from HTML. Write routes only when you want custom logic.</p>
           </li>
         </ul>
       </section>
     </main>
-
     <footer class="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 border-t border-tin px-4 py-8 text-sm text-husk sm:px-8">
       <p>MIT licensed. Made by <a href="https://github.com/anas1412" class="text-flour hover:text-crust">anas1412</a>.</p>
       <a href="https://github.com/anas1412/loaf" class="text-flour hover:text-crust">Source on GitHub</a>
