@@ -50,6 +50,7 @@
           <li><a href="#quick-start" class="plain block py-1 text-husk hover:text-flour">Quick start</a></li>
 <li><a href="#structure" class="plain block py-1 text-husk hover:text-flour">Project structure</a></li>
 <li><a href="#pages" class="plain block py-1 text-husk hover:text-flour">Pages</a></li>
+<li><a href="#styling" class="plain block py-1 text-husk hover:text-flour">Styling and themes</a></li>
 <li><a href="#saving-data" class="plain block py-1 text-husk hover:text-flour">Saving data</a></li>
 <li><a href="#data-api" class="plain block py-1 text-husk hover:text-flour">The data API</a></li>
 <li><a href="#routes" class="plain block py-1 text-husk hover:text-flour">Your own routes</a></li>
@@ -70,7 +71,7 @@ bun dev</code></pre></figure>
 <section id="structure" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Project structure</h2>
 <figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>public/         your pages, images and scripts
   index.html    the home page
-  loaf.js       frontend helper for Alpine
+  loaf.js       frontend helper: collection() and the theme picker
   demo.html     optional todo demo
 api/            your own routes, one file per route
 server.js       the Loaf engine
@@ -80,7 +81,24 @@ db.js           the database and the automatic data API</code></pre></figure>
 <section id="pages" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Pages</h2>
 <p>Every file in <code>public/</code> is served as-is. HTML pages get clean URLs:</p>
 <div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">File</th><th class="py-2 pr-6 text-left font-semibold text-flour">URL</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>public/index.html</code></td><td class="py-2 pr-6 align-top"><code>/</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/about.html</code></td><td class="py-2 pr-6 align-top"><code>/about</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/blog/index.html</code></td><td class="py-2 pr-6 align-top"><code>/blog</code></td></tr></tbody></table></div>
-<p>Pages use <a href="https://alpinejs.dev">Alpine.js</a> for interactivity and <a href="https://tailwindcss.com">Tailwind CSS</a> for styling. Both load from a CDN, so there's nothing to install. Copy the <code>&lt;head&gt;</code> from <code>public/index.html</code> into new pages.</p>
+<p>Pages use <a href="https://alpinejs.dev">Alpine.js</a> for interactivity, and <a href="https://tailwindcss.com">Tailwind CSS</a> with <a href="https://daisyui.com">daisyUI</a> for styling. All three load from a CDN, so there's nothing to install. Copy the <code>&lt;head&gt;</code> from <code>public/index.html</code> into new pages.</p>
+</section>
+<section id="styling" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Styling and themes</h2>
+<p>daisyUI gives you ready-made components, so a button is just <code>class=&quot;btn btn-primary&quot;</code>:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;button class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+&lt;input class=&quot;input&quot; placeholder=&quot;Your name&quot;&gt;
+&lt;div class=&quot;card bg-base-100 shadow-sm&quot;&gt;
+  &lt;div class=&quot;card-body&quot;&gt;A card&lt;/div&gt;
+&lt;/div&gt;</code></pre></figure>
+<p>Browse all components at <a href="https://daisyui.com/components/">daisyui.com/components</a>. Tailwind classes like <code>mt-4</code> or <code>flex</code> work alongside them.</p>
+<h3 class="mt-8 mb-2 text-xl font-semibold">Theme picker</h3>
+<p>Put this anywhere, for example in your navbar:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;select x-data=&quot;themePicker&quot; class=&quot;select select-sm&quot; aria-label=&quot;Theme&quot;&gt;&lt;/select&gt;</code></pre></figure>
+<p>It lists all 35 daisyUI themes, grouped into light and dark, and remembers each visitor's choice. It needs <code>loaf.js</code>.</p>
+<h3 class="mt-8 mb-2 text-xl font-semibold">Default theme</h3>
+<p>Without a choice, pages follow the device's light or dark mode. To use one theme by default, set it on the <code>&lt;html&gt;</code> tag:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;html lang=&quot;en&quot; data-theme=&quot;coffee&quot;&gt;</code></pre></figure>
+<p>Visitors can still switch with the picker. Use daisyUI's color classes (<code>bg-base-100</code>, <code>text-primary</code>, <code>btn-secondary</code>) rather than fixed colors like <code>bg-white</code>, so your page follows every theme.</p>
 </section>
 <section id="saving-data" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Saving data</h2>
 <p>Load <code>loaf.js</code> before Alpine, then use <code>collection(&#x27;name&#x27;)</code> on any element. The name can be anything: it's created the first time you save to it. No backend code needed.</p>
@@ -139,7 +157,7 @@ export const GET = () =&gt; Response.json(db.query(&quot;SELECT COUNT(*) AS coun
 <div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Setting</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>PORT</code></td><td class="py-2 pr-6 align-top">server port, default <code>3000</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>DB</code></td><td class="py-2 pr-6 align-top">database file, default <code>loaf.db</code>. Use <code>:memory:</code> for a throwaway one.</td></tr></tbody></table></div>
 </section>
 <section id="production" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Going to production</h2>
-<p>The Tailwind CDN build compiles styles in the browser. That's fine for small apps and prototypes. When you outgrow it, switch to the <a href="https://tailwindcss.com/docs/installation/tailwind-cli">Tailwind CLI</a> and serve the generated CSS file from <code>public/</code>.</p>
+<p>The Tailwind CDN build compiles styles in the browser, and the daisyUI CDN file includes every component. That's fine for small apps and prototypes. When you outgrow it, switch to the <a href="https://tailwindcss.com/docs/installation/tailwind-cli">Tailwind CLI</a> with the <a href="https://daisyui.com/docs/install/">daisyUI plugin</a> and serve the generated CSS file from <code>public/</code>.</p>
 <p>Back up <code>loaf.db</code>. That file is your whole database.</p>
 </section>
       </main>
