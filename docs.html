@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="loaf">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,36 +9,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46/themes.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+    <script src="loaf.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
+    <style>
+      /* The site's own daisyUI theme. Every other theme works too, via the picker. */
+      [data-theme="loaf"] {
+        color-scheme: dark;
+        --color-base-100: #1e1612;
+        --color-base-200: #17110d;
+        --color-base-300: #2d221b;
+        --color-base-content: #f7f0e6;
+        --color-primary: #d9913b;
+        --color-primary-content: #1e1612;
+        --color-secondary: #f2d07a;
+        --color-secondary-content: #1e1612;
+        --color-accent: #a8621f;
+        --color-accent-content: #f7f0e6;
+        --color-neutral: #2d221b;
+        --color-neutral-content: #f7f0e6;
+        --radius-selector: 0.5rem;
+        --radius-field: 0.5rem;
+        --radius-box: 0.75rem;
+      }
+      .prose-loaf :where(p, li) { line-height: 1.625; color: color-mix(in oklab, var(--color-base-content) 80%, transparent); }
+      .prose-loaf :where(p code, li code, td code) { font-family: "JetBrains Mono", monospace; font-size: 0.9em; color: var(--color-secondary); }
+      .prose-loaf :where(strong) { font-weight: 600; color: var(--color-base-content); }
+    </style>
     <style type="text/tailwindcss">
       @theme {
-        --color-rye: #1e1612;
-        --color-tin: #2d221b;
-        --color-crust: #d9913b;
-        --color-butter: #f2d07a;
-        --color-flour: #f7f0e6;
-        --color-husk: #a8998a;
         --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
         --font-mono: "JetBrains Mono", ui-monospace, monospace;
       }
-      a, button { @apply rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crust; }
-      .prose-loaf :where(p, li) { @apply leading-relaxed text-husk; }
-      .prose-loaf :where(p code, li code, td code) { @apply font-mono text-[0.9em] text-butter; }
-      .prose-loaf :where(strong) { @apply font-semibold text-flour; }
-      .prose-loaf :where(a:not(.plain)) { @apply text-flour underline decoration-crust underline-offset-4 hover:text-crust; }
     </style>
   </head>
-  <body class="bg-rye font-sans text-flour antialiased">
-    <header class="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 sm:px-8">
-      <a href="./" class="flex items-center gap-3 text-xl font-bold">
-        <img src="logo.svg" alt="" class="size-9" />
-        Loaf
-      </a>
-      <nav aria-label="Main" class="flex gap-6">
-        <a href="./" class="text-husk hover:text-flour">Home</a>
-        <a href="docs.html" class="text-flour" aria-current="page">Docs</a>
-        <a href="https://github.com/anas1412/loaf" class="text-husk hover:text-flour">GitHub</a>
+  <body class="bg-base-100 font-sans text-base-content antialiased">
+    <header class="navbar mx-auto max-w-6xl flex-wrap gap-2 px-4 py-4 sm:px-8">
+      <div class="flex-1">
+        <a href="./" class="inline-flex items-center gap-3 text-xl font-bold">
+          <img src="logo.svg" alt="" class="size-9" />
+          Loaf
+        </a>
+      </div>
+      <nav aria-label="Main" class="flex items-center gap-2">
+        <ul class="flex gap-1">
+          <li><a href="./" class="btn btn-ghost btn-sm">Home</a></li>
+          <li><a href="docs.html" class="btn btn-ghost btn-sm btn-active" aria-current="page">Docs</a></li>
+          <li><a href="https://github.com/anas1412/loaf" class="btn btn-ghost btn-sm">GitHub</a></li>
+        </ul>
+        <select x-data="themePicker" class="select select-sm w-40" aria-label="Theme"></select>
       </nav>
     </header>
     <div
@@ -46,30 +67,30 @@
     >
       <nav aria-label="Docs" class="lg:sticky lg:top-8 lg:self-start">
         <p class="mb-2 font-semibold">On this page</p>
-        <ul class="columns-2 text-[15px] sm:columns-3 lg:columns-1">
-          <li><a href="#quick-start" class="plain block py-1 text-husk hover:text-flour">Quick start</a></li>
-<li><a href="#structure" class="plain block py-1 text-husk hover:text-flour">Project structure</a></li>
-<li><a href="#pages" class="plain block py-1 text-husk hover:text-flour">Pages</a></li>
-<li><a href="#styling" class="plain block py-1 text-husk hover:text-flour">Styling and themes</a></li>
-<li><a href="#saving-data" class="plain block py-1 text-husk hover:text-flour">Saving data</a></li>
-<li><a href="#data-api" class="plain block py-1 text-husk hover:text-flour">The data API</a></li>
-<li><a href="#routes" class="plain block py-1 text-husk hover:text-flour">Your own routes</a></li>
-<li><a href="#starting-clean" class="plain block py-1 text-husk hover:text-flour">Starting clean</a></li>
-<li><a href="#scripts" class="plain block py-1 text-husk hover:text-flour">Scripts and settings</a></li>
-<li><a href="#production" class="plain block py-1 text-husk hover:text-flour">Going to production</a></li>
+        <ul class="menu menu-sm w-full grid-cols-2 p-0 sm:grid sm:grid-cols-3 lg:block">
+          <li><a href="#quick-start">Quick start</a></li>
+<li><a href="#structure">Project structure</a></li>
+<li><a href="#pages">Pages</a></li>
+<li><a href="#styling">Styling and themes</a></li>
+<li><a href="#saving-data">Saving data</a></li>
+<li><a href="#data-api">The data API</a></li>
+<li><a href="#routes">Your own routes</a></li>
+<li><a href="#starting-clean">Starting clean</a></li>
+<li><a href="#scripts">Scripts and settings</a></li>
+<li><a href="#production">Going to production</a></li>
         </ul>
       </nav>
       <main class="prose-loaf min-w-0 max-w-3xl">
         <h1 class="mb-10 text-5xl font-extrabold tracking-tight [font-variation-settings:'opsz'_96]">Docs</h1>
-        <section id="quick-start" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Quick start</h2>
-<p>You need <a href="https://bun.sh">Bun</a> 1.2.3 or newer. Then:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>bunx degit anas1412/loaf my-app
+        <section id="quick-start" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Quick start</h2>
+<p>You need <a class="link link-primary" href="https://bun.sh">Bun</a> 1.2.3 or newer. Then:</p>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>bunx degit anas1412/loaf my-app
 cd my-app
 bun dev</code></pre></figure>
 <p>Open <code>http://localhost:3000</code>. The todo demo is at <code>/demo</code>.</p>
 </section>
-<section id="structure" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Project structure</h2>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>public/         your pages, images and scripts
+<section id="structure" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Project structure</h2>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>public/         your pages, images and scripts
   index.html    the home page
   loaf.js       frontend helper: collection() and the theme picker
   demo.html     optional todo demo
@@ -78,31 +99,31 @@ server.js       the Loaf engine
 db.js           the database and the automatic data API</code></pre></figure>
 <p>Most apps only ever touch <code>public/</code>. Reach for <code>api/</code> when you need custom logic.</p>
 </section>
-<section id="pages" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Pages</h2>
+<section id="pages" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Pages</h2>
 <p>Every file in <code>public/</code> is served as-is. HTML pages get clean URLs:</p>
-<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">File</th><th class="py-2 pr-6 text-left font-semibold text-flour">URL</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>public/index.html</code></td><td class="py-2 pr-6 align-top"><code>/</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/about.html</code></td><td class="py-2 pr-6 align-top"><code>/about</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>public/blog/index.html</code></td><td class="py-2 pr-6 align-top"><code>/blog</code></td></tr></tbody></table></div>
-<p>Pages use <a href="https://alpinejs.dev">Alpine.js</a> for interactivity, and <a href="https://tailwindcss.com">Tailwind CSS</a> with <a href="https://daisyui.com">daisyUI</a> for styling. All three load from a CDN, so there's nothing to install. Copy the <code>&lt;head&gt;</code> from <code>public/index.html</code> into new pages.</p>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>File</th><th>URL</th></tr></thead><tbody><tr><td class="align-top"><code>public/index.html</code></td><td class="align-top"><code>/</code></td></tr><tr><td class="align-top"><code>public/about.html</code></td><td class="align-top"><code>/about</code></td></tr><tr><td class="align-top"><code>public/blog/index.html</code></td><td class="align-top"><code>/blog</code></td></tr></tbody></table></div>
+<p>Pages use <a class="link link-primary" href="https://alpinejs.dev">Alpine.js</a> for interactivity, and <a class="link link-primary" href="https://tailwindcss.com">Tailwind CSS</a> with <a class="link link-primary" href="https://daisyui.com">daisyUI</a> for styling. All three load from a CDN, so there's nothing to install. Copy the <code>&lt;head&gt;</code> from <code>public/index.html</code> into new pages.</p>
 </section>
-<section id="styling" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Styling and themes</h2>
+<section id="styling" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Styling and themes</h2>
 <p>daisyUI gives you ready-made components, so a button is just <code>class=&quot;btn btn-primary&quot;</code>:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;button class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;button class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
 &lt;input class=&quot;input&quot; placeholder=&quot;Your name&quot;&gt;
 &lt;div class=&quot;card bg-base-100 shadow-sm&quot;&gt;
   &lt;div class=&quot;card-body&quot;&gt;A card&lt;/div&gt;
 &lt;/div&gt;</code></pre></figure>
-<p>Browse all components at <a href="https://daisyui.com/components/">daisyui.com/components</a>. Tailwind classes like <code>mt-4</code> or <code>flex</code> work alongside them.</p>
+<p>Browse all components at <a class="link link-primary" href="https://daisyui.com/components/">daisyui.com/components</a>. Tailwind classes like <code>mt-4</code> or <code>flex</code> work alongside them.</p>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Theme picker</h3>
 <p>Put this anywhere, for example in your navbar:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;select x-data=&quot;themePicker&quot; class=&quot;select select-sm&quot; aria-label=&quot;Theme&quot;&gt;&lt;/select&gt;</code></pre></figure>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;select x-data=&quot;themePicker&quot; class=&quot;select select-sm&quot; aria-label=&quot;Theme&quot;&gt;&lt;/select&gt;</code></pre></figure>
 <p>It lists all 35 daisyUI themes, grouped into light and dark, and remembers each visitor's choice. It needs <code>loaf.js</code>.</p>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Default theme</h3>
 <p>Without a choice, pages follow the device's light or dark mode. To use one theme by default, set it on the <code>&lt;html&gt;</code> tag:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;html lang=&quot;en&quot; data-theme=&quot;coffee&quot;&gt;</code></pre></figure>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;html lang=&quot;en&quot; data-theme=&quot;coffee&quot;&gt;</code></pre></figure>
 <p>Visitors can still switch with the picker. Use daisyUI's color classes (<code>bg-base-100</code>, <code>text-primary</code>, <code>btn-secondary</code>) rather than fixed colors like <code>bg-white</code>, so your page follows every theme.</p>
 </section>
-<section id="saving-data" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Saving data</h2>
+<section id="saving-data" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Saving data</h2>
 <p>Load <code>loaf.js</code> before Alpine, then use <code>collection(&#x27;name&#x27;)</code> on any element. The name can be anything: it's created the first time you save to it. No backend code needed.</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">public/posts.html</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>&lt;div x-data=&quot;collection(&#x27;posts&#x27;)&quot;&gt;
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">public/posts.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;div x-data=&quot;collection(&#x27;posts&#x27;)&quot;&gt;
   &lt;form @submit.prevent=&quot;add($el)&quot;&gt;
     &lt;input name=&quot;title&quot; required&gt;
     &lt;button&gt;Add post&lt;/button&gt;
@@ -116,34 +137,34 @@ db.js           the database and the automatic data API</code></pre></figure>
   &lt;/template&gt;
 &lt;/div&gt;</code></pre></figure>
 <p>Inside <code>collection(&#x27;posts&#x27;)</code> you get:</p>
-<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Name</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>items</code></td><td class="py-2 pr-6 align-top">all saved records, newest first</td></tr><tr><td class="py-2 pr-6 align-top"><code>add($el)</code></td><td class="py-2 pr-6 align-top">on a <code>&lt;form&gt;</code>: saves its named inputs, then clears the form</td></tr><tr><td class="py-2 pr-6 align-top"><code>add({ title: &quot;Hi&quot; })</code></td><td class="py-2 pr-6 align-top">saves any object you pass</td></tr><tr><td class="py-2 pr-6 align-top"><code>update(item, { ... })</code></td><td class="py-2 pr-6 align-top">changes only the fields you pass, e.g. <code>{ done: true }</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>remove(item)</code></td><td class="py-2 pr-6 align-top">deletes the record</td></tr><tr><td class="py-2 pr-6 align-top"><code>loading</code></td><td class="py-2 pr-6 align-top"><code>true</code> until the first load finishes</td></tr><tr><td class="py-2 pr-6 align-top"><code>error</code></td><td class="py-2 pr-6 align-top">the last error message, or <code>null</code></td></tr></tbody></table></div>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Name</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>items</code></td><td class="align-top">all saved records, newest first</td></tr><tr><td class="align-top"><code>add($el)</code></td><td class="align-top">on a <code>&lt;form&gt;</code>: saves its named inputs, then clears the form</td></tr><tr><td class="align-top"><code>add({ title: &quot;Hi&quot; })</code></td><td class="align-top">saves any object you pass</td></tr><tr><td class="align-top"><code>update(item, { ... })</code></td><td class="align-top">changes only the fields you pass, e.g. <code>{ done: true }</code></td></tr><tr><td class="align-top"><code>remove(item)</code></td><td class="align-top">deletes the record</td></tr><tr><td class="align-top"><code>loading</code></td><td class="align-top"><code>true</code> until the first load finishes</td></tr><tr><td class="align-top"><code>error</code></td><td class="align-top">the last error message, or <code>null</code></td></tr></tbody></table></div>
 <p>Every record gets an <code>id</code> and a <code>created_at</code> automatically.</p>
 </section>
-<section id="data-api" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">The data API</h2>
+<section id="data-api" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">The data API</h2>
 <p><code>collection()</code> talks to this API, and you can call it from anywhere with <code>fetch</code>:</p>
-<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Request</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>GET /api/posts</code></td><td class="py-2 pr-6 align-top">list all posts, newest first</td></tr><tr><td class="py-2 pr-6 align-top"><code>POST /api/posts</code></td><td class="py-2 pr-6 align-top">save the JSON object in the body</td></tr><tr><td class="py-2 pr-6 align-top"><code>GET /api/posts/5</code></td><td class="py-2 pr-6 align-top">get one post</td></tr><tr><td class="py-2 pr-6 align-top"><code>PATCH /api/posts/5</code></td><td class="py-2 pr-6 align-top">change the fields in the body, <code>null</code> removes one</td></tr><tr><td class="py-2 pr-6 align-top"><code>DELETE /api/posts/5</code></td><td class="py-2 pr-6 align-top">delete it</td></tr></tbody></table></div>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Request</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>GET /api/posts</code></td><td class="align-top">list all posts, newest first</td></tr><tr><td class="align-top"><code>POST /api/posts</code></td><td class="align-top">save the JSON object in the body</td></tr><tr><td class="align-top"><code>GET /api/posts/5</code></td><td class="align-top">get one post</td></tr><tr><td class="align-top"><code>PATCH /api/posts/5</code></td><td class="align-top">change the fields in the body, <code>null</code> removes one</td></tr><tr><td class="align-top"><code>DELETE /api/posts/5</code></td><td class="align-top">delete it</td></tr></tbody></table></div>
 <p>Everything is stored in <code>loaf.db</code>, a single SQLite file.</p>
-<div class="my-6 rounded-lg border-l-4 border-crust bg-tin/60 px-5 py-4">
+<div role="alert" class="alert alert-warning alert-soft my-6 block">
   <p><strong>Before you go public:</strong> the data API has no login. Anyone who can open your site can read, change and delete every record. That's fine on your own machine and for prototypes. For a public site, remove the <code>// db</code> lines from <code>server.js</code> and write your own routes in <code>api/</code> with the checks you need.</p>
 </div>
 </section>
-<section id="routes" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Your own routes</h2>
+<section id="routes" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Your own routes</h2>
 <p>Every <code>.js</code> file in <code>api/</code> becomes a route. Export a function for each HTTP method:</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/hello.js → /api/hello</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>export const GET = () =&gt; Response.json({ message: &quot;Hello&quot; });</code></pre></figure>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">api/hello.js → /api/hello</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>export const GET = () =&gt; Response.json({ message: &quot;Hello&quot; });</code></pre></figure>
 <p>Put a name in brackets for a URL parameter:</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/users/[id].js → /api/users/:id</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>export const GET = (req) =&gt; Response.json({ id: req.params.id });
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">api/users/[id].js → /api/users/:id</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>export const GET = (req) =&gt; Response.json({ id: req.params.id });
 
 export const POST = async (req) =&gt; {
   const body = await req.json();
   return Response.json({ id: req.params.id, received: body }, { status: 201 });
 };</code></pre></figure>
 <p>Your routes win over the data API when both match the same URL. To use the database directly, import it:</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-husk">api/count.js → /api/count</figcaption><pre class="overflow-x-auto rounded-xl bg-[#17110d] p-5 font-mono text-[13px] leading-6 text-flour/90 ring-1 ring-tin sm:text-sm"><code>import { db } from &quot;../db.js&quot;;
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">api/count.js → /api/count</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>import { db } from &quot;../db.js&quot;;
 
 export const GET = () =&gt; Response.json(db.query(&quot;SELECT COUNT(*) AS count FROM records&quot;).get());</code></pre></figure>
-<p><code>db</code> is a <a href="https://bun.sh/docs/api/sqlite">bun:sqlite</a> database, so you can create your own tables too.</p>
+<p><code>db</code> is a <a class="link link-primary" href="https://bun.sh/docs/api/sqlite">bun:sqlite</a> database, so you can create your own tables too.</p>
 </section>
-<section id="starting-clean" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Starting clean</h2>
+<section id="starting-clean" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Starting clean</h2>
 <p>Everything optional can be deleted:</p>
 <ul class="my-4 list-disc space-y-2 pl-5">
   <li><strong>No demo:</strong> delete <code>public/demo.html</code>.</li>
@@ -151,20 +172,20 @@ export const GET = () =&gt; Response.json(db.query(&quot;SELECT COUNT(*) AS coun
   <li><strong>No database:</strong> delete <code>db.js</code> and the lines marked <code>// db</code> in <code>server.js</code>. <code>collection()</code> stops working, but pages and <code>api/</code> routes keep working.</li>
 </ul>
 </section>
-<section id="scripts" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Scripts and settings</h2>
-<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Command</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>bun dev</code></td><td class="py-2 pr-6 align-top">start with auto-restart on save</td></tr><tr><td class="py-2 pr-6 align-top"><code>bun start</code></td><td class="py-2 pr-6 align-top">start for production</td></tr><tr><td class="py-2 pr-6 align-top"><code>bun test</code></td><td class="py-2 pr-6 align-top">run tests</td></tr></tbody></table></div>
+<section id="scripts" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Scripts and settings</h2>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>bun dev</code></td><td class="align-top">start with auto-restart on save</td></tr><tr><td class="align-top"><code>bun start</code></td><td class="align-top">start for production</td></tr><tr><td class="align-top"><code>bun test</code></td><td class="align-top">run tests</td></tr></tbody></table></div>
 <p>Set these in the environment or in a <code>.env</code> file:</p>
-<div class="my-5 overflow-x-auto"><table class="w-full text-husk"><thead class="border-b border-tin"><tr><th class="py-2 pr-6 text-left font-semibold text-flour">Setting</th><th class="py-2 pr-6 text-left font-semibold text-flour">What it does</th></tr></thead><tbody class="divide-y divide-tin"><tr><td class="py-2 pr-6 align-top"><code>PORT</code></td><td class="py-2 pr-6 align-top">server port, default <code>3000</code></td></tr><tr><td class="py-2 pr-6 align-top"><code>DB</code></td><td class="py-2 pr-6 align-top">database file, default <code>loaf.db</code>. Use <code>:memory:</code> for a throwaway one.</td></tr></tbody></table></div>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Setting</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>PORT</code></td><td class="align-top">server port, default <code>3000</code></td></tr><tr><td class="align-top"><code>DB</code></td><td class="align-top">database file, default <code>loaf.db</code>. Use <code>:memory:</code> for a throwaway one.</td></tr></tbody></table></div>
 </section>
-<section id="production" class="scroll-mt-8 border-t border-tin py-10 first:border-t-0 first:pt-0"><h2 class="mb-4 text-3xl font-bold tracking-tight">Going to production</h2>
-<p>The Tailwind CDN build compiles styles in the browser, and the daisyUI CDN file includes every component. That's fine for small apps and prototypes. When you outgrow it, switch to the <a href="https://tailwindcss.com/docs/installation/tailwind-cli">Tailwind CLI</a> with the <a href="https://daisyui.com/docs/install/">daisyUI plugin</a> and serve the generated CSS file from <code>public/</code>.</p>
+<section id="production" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Going to production</h2>
+<p>The Tailwind CDN build compiles styles in the browser, and the daisyUI CDN file includes every component. That's fine for small apps and prototypes. When you outgrow it, switch to the <a class="link link-primary" href="https://tailwindcss.com/docs/installation/tailwind-cli">Tailwind CLI</a> with the <a class="link link-primary" href="https://daisyui.com/docs/install/">daisyUI plugin</a> and serve the generated CSS file from <code>public/</code>.</p>
 <p>Back up <code>loaf.db</code>. That file is your whole database.</p>
 </section>
       </main>
     </div>
-    <footer class="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 border-t border-tin px-4 py-8 text-sm text-husk sm:px-8">
-      <p>MIT licensed. Made by <a href="https://github.com/anas1412" class="text-flour hover:text-crust">anas1412</a>.</p>
-      <a href="https://github.com/anas1412/loaf" class="text-flour hover:text-crust">Source on GitHub</a>
+    <footer class="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 border-t border-base-300 px-4 py-8 text-sm text-base-content/70 sm:px-8">
+      <p>MIT licensed. Made by <a href="https://github.com/anas1412" class="link link-hover text-base-content">anas1412</a>.</p>
+      <a href="https://github.com/anas1412/loaf" class="link link-hover text-base-content">Source on GitHub</a>
     </footer>
   </body>
 </html>
