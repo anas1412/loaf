@@ -1,54 +1,69 @@
 <p align="center">
-  <img src="public/logo.svg" alt="Loaf" width="120" height="120">
+  <img src="logo.svg" alt="Loaf" width="120" height="120">
 </p>
 
 <h1 align="center">Loaf</h1>
 
-<p align="center">Make websites and small apps by writing HTML. Nothing to set up, nothing to install.</p>
+<p align="center">Make websites by writing HTML. Nothing to install, free to host on GitHub Pages.</p>
 
 <p align="center"><a href="https://anas1412.github.io/loaf/">Website</a> · <a href="https://anas1412.github.io/loaf/docs.html">Guide</a> · <a href="https://anas1412.github.io/loaf/tutorial.mp4">Watch: a notes app in one minute</a></p>
 
 ## Get started
 
-1. Install [Bun](https://bun.sh) (once).
-2. Run:
-   ```bash
-   bunx degit anas1412/loaf my-site
-   cd my-site
-   bun dev
-   ```
-3. Open http://localhost:3000.
+**On GitHub, with nothing to install:**
 
-Your site lives in the `public/` folder. Change a file, save, refresh.
+1. Click **Use this template** → **Create a new repository** at the top of this page.
+2. In your new repository, open **Settings** → **Pages**, pick the `main` branch and click **Save**.
+3. A minute later your site is live at `https://your-name.github.io/your-repo/`.
+
+Edit any file with the pencil icon on GitHub, and the site updates by itself.
+
+**On your computer:** download this repository (**Code** → **Download ZIP**), unzip it, and open the folder with any local web server, for example:
+
+```bash
+npx serve
+```
+
+Or use the "Live Server" extension in VS Code. Opening the files directly by double-clicking doesn't work, because browsers don't let pages load other files from your disk.
 
 ## Add a page
 
-Create `public/about.html`:
+Create `about.html`:
 
 ```html
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
 <title>About me</title>
 
 <h1 class="text-3xl font-bold">Hi, I'm Sam</h1>
 <p>I bake bread and build websites.</p>
 ```
 
-Open http://localhost:3000/about. The header, footer and page frame are added for you.
+The first line goes at the top of every page. It adds the header, footer, styles and everything else, so the page only needs its own content. Open it at `about.html`.
 
 ## Change the header and footer
 
 Every page shares them:
 
-- `public/_header.html`: your logo, links and the theme menu
-- `public/_footer.html`: the bottom of every page
-- `public/_layout.html`: the page frame around them
+- `_header.html`: your logo, links and the theme menu
+- `_footer.html`: the bottom of every page
+- `_layout.html`: the page frame around them
 
-Add a link to your new page in `_header.html` and it shows up everywhere. To reuse any piece on several pages, put it in a file starting with `_` and drop it in with `<loaf-include src="_contact.html"></loaf-include>`.
+Add a link to your new page in `_header.html`, like `<li><a href="about.html">About</a></li>`, and it shows up everywhere. To reuse any piece on several pages, put it in a file starting with `_` and drop it in with `<loaf-include src="_contact.html"></loaf-include>`.
+
+Links and images are relative to your site's main folder, so write `about.html` or `photo.jpg`, not `/about`.
+
+**Pages in a folder** (like `blog/first-post.html`) need to know where the main folder is. Add `data-root="../"` to their first line:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js" data-root="../"></script>
+```
 
 ## Save things
 
-A whole notes app. Create `public/notes.html`:
+A whole notes app. Create `notes.html`:
 
 ```html
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
 <title>Notes</title>
 
 <loaf-form name="notes">
@@ -65,8 +80,6 @@ A whole notes app. Create `public/notes.html`:
 - `<loaf-list name="notes">` shows everything saved, newest first.
 - `field="text"` shows the input named `text`.
 
-Notes stay after you refresh or restart.
-
 Inside a `<loaf-list>` you can also use:
 
 | Add this                             | What it does                          |
@@ -81,7 +94,7 @@ And anywhere on the page:
 - `<loaf-count name="notes"></loaf-count>` shows how many there are.
 - `<loaf-empty name="notes">No notes yet.</loaf-empty>` shows only when there are none.
 
-> Anyone who can open your site can see and change what's saved. Keep private things out of it.
+Everything is saved in the visitor's own browser. It stays after refreshing and closing the browser, it never leaves their device, and each visitor only sees their own. That makes it right for personal tools like notes, to-do lists and trackers, but not for things visitors share, like a guestbook.
 
 ## Make it look good
 
@@ -101,18 +114,24 @@ Pick a theme from the menu in the header. There are 35. To choose one for everyo
 
 ## Put it online
 
-Your site needs a host that runs Bun, like [Railway](https://railway.com) or [Fly.io](https://fly.io). Use `bun start` as the start command.
+Any service that hosts plain files works: GitHub Pages (see above), [Netlify](https://app.netlify.com/drop) (drag and drop the folder) or Cloudflare Pages. Keep the empty `.nojekyll` file: without it, GitHub Pages skips the files starting with `_`.
 
-If your site saves things, they're kept in the file `loaf.db`. Ask your host for a volume (a disk that stays) so saved data survives updates.
+## Update Loaf
+
+The first line of each page loads Loaf `0.2`, which includes every 0.2 fix automatically. When a new version like `0.3` comes out, change `@0.2` to `@0.3` on your pages.
 
 ## Remove what you don't need
 
-- The demo: delete `public/demo.html` and its link in `_header.html`.
-- The example in `api/`: delete `api/hello.js`.
+- The demo: delete `demo.html` and its link in `_header.html`.
+- The tests: delete the `test/` folder.
 
 ## For developers
 
-Loaf's own code is in `loaf/` (version in `loaf/VERSION`). Leave it as it is, so Loaf can be updated later; your work goes in `public/` and `api/`. The `loaf-` elements are built on [Alpine.js](https://alpinejs.dev), which you can use directly in any page. Every file in `api/` becomes a route (`api/hello.js` → `/api/hello`), and `.claude/skills/` teaches AI assistants how Loaf works. The [guide](https://anas1412.github.io/loaf/docs.html#developers) has the details.
+- `loaf.js` is the whole of Loaf, one file with no build step. It loads [Tailwind](https://tailwindcss.com), daisyUI and [Alpine.js](https://alpinejs.dev), then builds each page in the browser.
+- The `loaf-` elements are built on `x-data="collection('notes')"`, which you can use directly with Alpine: it gives you `items`, `add()`, `update()`, `remove()`, `loading`, `saving` and `error`.
+- Data is stored in `localStorage`, one key per collection, separate for each site folder.
+- Open `test/` through a local server to run the browser tests.
+- `.claude/skills/` teaches AI assistants how Loaf works.
 
 ## License
 

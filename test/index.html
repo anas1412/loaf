@@ -1,0 +1,80 @@
+<script src="../loaf.js" data-root="./"></script>
+<title>Loaf tests</title>
+
+<!-- Open this page through a local web server (for example `bunx serve` in the repo folder, then /test/).
+     Results show below and in window.loafTest. -->
+<h1 id="page-h1">Page content</h1>
+<pre id="results" class="p-4">running…</pre>
+
+<loaf-count name="t" id="count"></loaf-count>
+<loaf-empty name="t" id="empty">empty</loaf-empty>
+<loaf-form name="t" id="form">
+  <input name="text">
+  <input name="done" type="checkbox">
+  <input name="qty" type="number" value="2">
+  <button>Save</button>
+</loaf-form>
+<loaf-list name="t" id="list">
+  <input toggle="done">
+  <span edit="text"></span>
+  <span field="created_at" class="when"></span>
+  <button remove>x</button>
+</loaf-list>
+
+<script>
+  document.addEventListener("alpine:initialized", async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const results = [];
+    const check = (name, ok) => results.push(`${ok ? "PASS" : "FAIL"}  ${name}`);
+    localStorage.removeItem(loafKey("data:t"));
+    await wait(150); // the page is shown within 100ms of Alpine starting
+
+    check("layout wraps the page", document.querySelector("main > #page-h1") !== null);
+    check("page title wins over the layout's", document.title === "Loaf tests");
+    check("layout head tags are added", document.querySelector('meta[name="loaf-test"]')?.content === "from-layout");
+    check("layout scripts run", window.layoutScriptRan === true);
+    check("layout body attributes apply", document.body.classList.contains("from-layout"));
+    check("layout theme is the default", document.documentElement.dataset.theme === "coffee" || localStorage.getItem(loafKey("theme")) !== null);
+    check("includes nest", document.querySelector("#nav > #logo")?.textContent === "LOGO");
+    check("commented-out includes stay comments", document.body.innerHTML.includes('<!-- <loaf-include src="_commented.html"></loaf-include> -->'));
+    check("page is visible", document.documentElement.style.visibility === "");
+    check("empty shows when nothing is saved", getComputedStyle(document.getElementById("empty")).display !== "none");
+
+    const form = document.getElementById("form");
+    check("loaf-form becomes a styled form", form.tagName === "FORM" && form.querySelector("button").className === "btn btn-primary");
+    form.querySelector("[name=text]").value = "first";
+    form.querySelector("[name=done]").checked = true;
+    form.requestSubmit();
+    form.requestSubmit(); // a double submit saves once
+    await wait(50);
+    let saved = JSON.parse(localStorage.getItem(loafKey("data:t")));
+    check("saves one record per submit", saved.length === 1);
+    check("form values keep their types", saved[0].text === "first" && saved[0].done === true && saved[0].qty === 2);
+    check("records get id and created_at", saved[0].id === 1 && !Number.isNaN(Date.parse(saved[0].created_at)));
+    check("form clears after saving", form.querySelector("[name=text]").value === "");
+    check("count updates", document.getElementById("count").textContent === "1");
+    check("empty hides", getComputedStyle(document.getElementById("empty")).display === "none");
+
+    const row = () => document.querySelector("#list > div");
+    check("list shows the item", row()?.querySelector("[edit]").textContent === "first");
+    check("created_at shows as a date", row()?.querySelector(".when").textContent !== saved[0].created_at);
+    row().querySelector("input[type=checkbox]").click();
+    await wait(50);
+    check("toggle saves", JSON.parse(localStorage.getItem(loafKey("data:t")))[0].done === false);
+    const edit = row().querySelector("[edit]");
+    edit.textContent = "changed";
+    edit.dispatchEvent(new Event("blur"));
+    await wait(50);
+    check("edit saves", JSON.parse(localStorage.getItem(loafKey("data:t")))[0].text === "changed");
+    row().querySelector("button").click();
+    await wait(50);
+    check("remove deletes", JSON.parse(localStorage.getItem(loafKey("data:t"))).length === 0 && !row());
+    check("data is kept per site folder", loafKey("x").startsWith(`loaf:${new URL("./", location.href).pathname}:`));
+
+    localStorage.removeItem(loafKey("data:t"));
+    const failed = results.filter((r) => r.startsWith("FAIL")).length;
+    results.push(`\n${results.length - failed} passed, ${failed} failed`);
+    document.getElementById("results").textContent = results.join("\n");
+    window.loafTest = { failed, results };
+  });
+</script>
