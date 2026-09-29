@@ -5,6 +5,7 @@
      Results show below and in window.loafTest. -->
 <h1 id="page-h1">Page content</h1>
 <pre id="results" class="p-4">running…</pre>
+<p id="icons"><loaf-icon name="star" class="size-6"></loaf-icon> <loaf-icon name="house" label="Home"></loaf-icon></p>
 
 <loaf-count name="t" id="count"></loaf-count>
 <loaf-empty name="t" id="empty">empty</loaf-empty>
@@ -38,6 +39,11 @@
     check("includes nest", document.querySelector("#nav > #logo")?.textContent === "LOGO");
     check("commented-out includes stay comments", document.body.innerHTML.includes('<!-- <loaf-include src="_commented.html"></loaf-include> -->'));
     check("page is visible", document.documentElement.style.visibility === "");
+    const [star, home] = document.querySelectorAll("#icons loaf-icon");
+    check("icons use the Lucide file for their name", getComputedStyle(star).maskImage.includes("lucide-static") && getComputedStyle(star).maskImage.includes("star.svg"));
+    check("icons are sized by classes", star.getBoundingClientRect().width === 24);
+    check("icons are hidden from screen readers unless labeled", star.getAttribute("aria-hidden") === "true" && home.getAttribute("aria-label") === "Home");
+    check("icons follow the text color", getComputedStyle(star).backgroundColor === getComputedStyle(star.parentElement).color);
     check("empty shows when nothing is saved", getComputedStyle(document.getElementById("empty")).display !== "none");
 
     const form = document.getElementById("form");

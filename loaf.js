@@ -8,7 +8,7 @@
 // Everything runs in the browser, so a Loaf site is a folder of HTML files that any
 // static host can serve, like GitHub Pages.
 
-const LOAF_VERSION = "0.2.0";
+const LOAF_VERSION = "0.2.1";
 const loafScript = document.currentScript;
 
 // The site's main folder, where _layout.html lives. A page in a sub-folder says so with
@@ -42,6 +42,7 @@ const LOAF_LIBS = {
   themes: "https://cdn.jsdelivr.net/npm/daisyui@5.7.46/themes.css",
   tailwind: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3",
   alpine: "https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js",
+  icons: "https://cdn.jsdelivr.net/npm/lucide-static@1.48.0/icons/",
 };
 for (const href of [LOAF_LIBS.daisyui, LOAF_LIBS.themes]) {
   const link = document.createElement("link");
@@ -55,7 +56,15 @@ for (const href of [LOAF_LIBS.daisyui, LOAF_LIBS.themes]) {
   document.head.append(tailwind);
   const style = document.createElement("style");
   // In Tailwind's base layer, so classes like "flex" or "hidden" on these elements still win.
-  style.textContent = "@layer base { loaf-list, loaf-empty { display: block; } }";
+  style.textContent = `@layer base {
+    loaf-list, loaf-empty { display: block; }
+    loaf-icon {
+      display: inline-block; width: 1em; height: 1em; flex-shrink: 0; vertical-align: -0.125em;
+      background-color: currentColor;
+      mask: var(--loaf-icon) center / contain no-repeat;
+      -webkit-mask: var(--loaf-icon) center / contain no-repeat;
+    }
+  }`;
   document.head.append(style);
 }
 
@@ -270,6 +279,7 @@ function formValues(form) {
 //   <loaf-count name="notes">    how many items are saved
 //   <loaf-empty name="notes">    shown only when nothing is saved yet
 //   <loaf-theme>                 the theme menu
+//   <loaf-icon name="house">     an icon from lucide.dev/icons, in the text's color and size
 //
 // Elements without a class get daisyUI's look. Inside <loaf-list>, the current item is
 // `item`, so Alpine attributes work too: <span :class="item.done && 'line-through'">.
@@ -307,7 +317,25 @@ function bindCollection(el, name = el.getAttribute("name")) {
   el.setAttribute("x-data", `collection(${JSON.stringify(name ?? "")})`);
 }
 
+// <loaf-icon name="star"> draws that Lucide icon with the text color, 1em big (size it with classes like size-5).
+// Add label="Favorite" when the icon is the only thing saying what something is.
+function upgradeIcons() {
+  for (const el of document.querySelectorAll("loaf-icon")) {
+    const name = (el.getAttribute("name") ?? "").trim().toLowerCase();
+    if (!/^[a-z0-9-]+$/.test(name)) {
+      console.warn(`<loaf-icon name="${name}"> isn't an icon name. Pick one at https://lucide.dev/icons`);
+      continue;
+    }
+    el.style.setProperty("--loaf-icon", `url("${LOAF_LIBS.icons}${name}.svg")`);
+    if (el.hasAttribute("label")) {
+      el.setAttribute("role", "img");
+      el.setAttribute("aria-label", el.getAttribute("label"));
+    } else el.setAttribute("aria-hidden", "true");
+  }
+}
+
 function upgradeLoafElements() {
+  upgradeIcons(); // first, so icons inside <loaf-list> are ready before the list copies them
   for (const el of document.querySelectorAll("loaf-theme")) {
     const select = replaceElement(el, "select");
     styleDefault(select, "select select-sm w-32 sm:w-40");

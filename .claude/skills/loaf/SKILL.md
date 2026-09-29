@@ -78,6 +78,7 @@ loaf.js           the library source (only in the Loaf repo itself)
   - Any Alpine attribute can use `item`, e.g. `:class="item.done && 'line-through'"`.
 - `<loaf-count name>` shows the number of records; `<loaf-empty name>` shows only when there are none.
 - `<loaf-theme>` is the theme menu (a daisyUI `select`).
+- `<loaf-icon name="house"></loaf-icon>` shows a [Lucide](https://lucide.dev/icons) icon (kebab-case names like `shopping-cart`, `trash-2`, `chef-hat`), 1em big in `currentColor`. Size it with Tailwind (`size-5`), color it with text classes (`text-primary`). It's decorative (`aria-hidden`) unless it has `label="…"`; icon-only buttons need either a `label` or an `aria-label` on the button. Use icons, not emoji, for UI.
 - **Default styling:** an element without a `class` gets daisyUI's look: form inputs `input grow`, textareas `textarea w-full`, selects `select`, buttons `btn btn-primary`, the form `flex flex-wrap items-center gap-2`, the list `flex flex-col gap-3`, each list item `rounded-box bg-base-100 p-4 shadow-sm` (several children are wrapped in a row: `flex items-center gap-3 rounded-box bg-base-100 p-4 shadow-sm`, and their unstyled `field`/`edit` children get `grow`), `remove` buttons `btn btn-ghost btn-sm`, `toggle` inputs `checkbox`. Adding any `class` replaces the default for that element.
 - Elements are converted when Alpine starts, so they must be in the page, layout or includes. Don't create them later with JavaScript.
 

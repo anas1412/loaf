@@ -110,6 +110,15 @@ To add a piece, copy it from the daisyUI site and paste it into your page:
 </div>
 ```
 
+**Icons.** Show any of the 1,600 icons from [lucide.dev/icons](https://lucide.dev/icons) by name:
+
+```html
+<button class="btn"><loaf-icon name="heart"></loaf-icon> Like</button>
+<loaf-icon name="chef-hat" class="size-8 text-primary"></loaf-icon>
+```
+
+An icon takes the color and size of the text around it. Make it bigger with a class like `size-8`. When an icon is shown on its own, give it a `label` that says what it means, like `<loaf-icon name="trash-2" label="Delete">`.
+
 Pick a theme from the menu in the header. There are 35. To choose one for everyone, open `_layout.html` and change `<html lang="en">` to `<html lang="en" data-theme="coffee">`.
 
 ## Put it online
