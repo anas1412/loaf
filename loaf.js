@@ -1,14 +1,14 @@
 // Loaf: make websites by writing HTML. https://github.com/anas1412/loaf
 //
 // Put this first on every page:
-//   <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
+//   <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js"></script>
 //
 // It loads Tailwind, daisyUI and Alpine, puts the page inside _layout.html, pastes in
 // <loaf-include> pieces, and turns the loaf- elements (below) into working HTML.
 // Everything runs in the browser, so a Loaf site is a folder of HTML files that any
 // static host can serve, like GitHub Pages.
 
-const LOAF_VERSION = "0.2.1";
+const LOAF_VERSION = "0.3.0";
 const loafScript = document.currentScript;
 
 // The site's main folder, where _layout.html lives. A page in a sub-folder says so with

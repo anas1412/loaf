@@ -31,7 +31,7 @@ Or use the "Live Server" extension in VS Code. Opening the files directly by dou
 Create `about.html`:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js"></script>
 <title>About me</title>
 
 <h1 class="text-3xl font-bold">Hi, I'm Sam</h1>
@@ -55,7 +55,7 @@ Links and images are relative to your site's main folder, so write `about.html` 
 **Pages in a folder** (like `blog/first-post.html`) need to know where the main folder is. Add `data-root="../"` to their first line:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js" data-root="../"></script>
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js" data-root="../"></script>
 ```
 
 ## Save things
@@ -63,7 +63,7 @@ Links and images are relative to your site's main folder, so write `about.html` 
 A whole notes app. Create `notes.html`:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js"></script>
 <title>Notes</title>
 
 <loaf-form name="notes">
@@ -127,7 +127,7 @@ Any service that hosts plain files works: GitHub Pages (see above), [Netlify](ht
 
 ## Update Loaf
 
-The first line of each page loads Loaf `0.2`, which includes every 0.2 fix automatically. When a new version like `0.3` comes out, change `@0.2` to `@0.3` on your pages.
+The first line of each page loads Loaf `0.3`, which gets every 0.3 fix automatically. New features come in new versions like `0.4`: to use them, change `@0.3` to `@0.4` on your pages.
 
 ## Remove what you don't need
 

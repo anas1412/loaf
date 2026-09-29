@@ -12,7 +12,7 @@ A Loaf site is a folder of HTML files. Each page starts with one script tag that
 - **Static only.** No server code, no npm packages, no build step, no bundlers, no `tailwind.config.js`, no `@plugin` / `@utility` / `@import "tailwindcss"` CSS. Everything must work when the folder is served by GitHub Pages.
 - **Every page's first line** is the Loaf script. Don't add Tailwind, daisyUI or Alpine yourself; Loaf loads them.
   ```html
-  <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js"></script>
   ```
 - **Audience:** many Loaf users aren't programmers. Write pages with `loaf-` elements and daisyUI classes, and keep Alpine out of pages unless it's needed.
 - Prefer the simplest layer that works: plain HTML + daisyUI, then `loaf-` elements, then Alpine with `collection()`.
@@ -37,7 +37,7 @@ loaf.js           the library source (only in the Loaf repo itself)
 
 - **A page is a fragment**: the script line, a `<title>`, then content. No `<html>`, `<head>`, `<body>`, `<main>`, navbar or footer; the layout puts the page in a centered `<main>` column (`max-w-3xl`, `gap-4`).
   ```html
-  <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js"></script>
   <title>About · My site</title>
 
   <h1 class="text-3xl font-bold">About</h1>
@@ -113,4 +113,4 @@ Themes: `<loaf-theme></loaf-theme>` lists the 35 built-in themes and remembers e
 ## Hosting and updating
 
 - GitHub Pages: Settings → Pages → deploy from `main`. Keep `.nojekyll`. Netlify and Cloudflare Pages also work with no settings.
-- `@0.2` in the script URL follows every 0.2.x release. To move to a new minor version, change the number on every page.
+- `@0.3` in the script URL follows every 0.3.x release, which are fixes only. New features ship in a new minor version (0.4): change the number on every page to use them. Browsers cache the `@0.3` file for up to a week, so never rely on a feature from a newer patch.
