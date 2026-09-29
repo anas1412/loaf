@@ -1,5 +1,5 @@
 import { test, expect, afterAll } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { connect } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -22,7 +22,16 @@ fixture("inner/_layout.html", `<html><head><title>Inner</title></head><body><mai
 fixture("old/_layout.html", `<html><head><title>Old</title></head><body><slot /></body></html>`);
 fixture("old/page.html", `<include src="loaf-test-fixtures/_logo.html" />`);
 fixture("inner/page.html", `<p>Inside</p>`);
-afterAll(() => rmSync(FIXTURES, { recursive: true, force: true }));
+// An api/ route used by the routing test, removed when the tests finish.
+const API_DIR = join(import.meta.dir, "api");
+const API_FIXTURE = join(API_DIR, "loaf-test-fixture.js");
+const hadApiDir = existsSync(API_DIR);
+mkdirSync(API_DIR, { recursive: true });
+writeFileSync(API_FIXTURE, `export const GET = () => Response.json({ from: "api" });\n`);
+afterAll(() => {
+  rmSync(FIXTURES, { recursive: true, force: true });
+  rmSync(hadApiDir ? API_FIXTURE : API_DIR, { recursive: true, force: true });
+});
 
 process.env.DB = ":memory:";
 process.env.PORT = "0";
@@ -49,7 +58,7 @@ const rawStatus = (path) =>
 
 test("serves pages from public/ with clean URLs", async () => {
   expect((await fetch(url("/"))).status).toBe(200);
-  expect(await text("/demo")).toContain('<loaf-list name="todos">');
+  expect(await text("/loaf-test-fixtures/untitled")).toContain("<p>No title</p>");
   expect((await fetch(url("/missing"))).status).toBe(404);
 });
 
@@ -93,7 +102,7 @@ test("layouts: wraps fragments, sets the title, nests includes", async () => {
 });
 
 test("turns api/ files into routes that win over the data API", async () => {
-  expect(await (await fetch(url("/api/hello"))).json()).toEqual({ message: "Hello from api/hello.js" });
+  expect(await (await fetch(url("/api/loaf-test-fixture"))).json()).toEqual({ from: "api" });
 });
 
 test("api/ files: skips empty files and _helpers, supports export default", async () => {
