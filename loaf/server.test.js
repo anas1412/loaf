@@ -5,7 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 // Pages used by the layout tests, removed when the tests finish.
-const FIXTURES = join(import.meta.dir, "public", "loaf-test-fixtures");
+const ROOT = join(import.meta.dir, "..");
+const FIXTURES = join(ROOT, "public", "loaf-test-fixtures");
 mkdirSync(join(FIXTURES, "inner"), { recursive: true });
 mkdirSync(join(FIXTURES, "old"), { recursive: true });
 const fixture = (name, html) => writeFileSync(join(FIXTURES, name), html);
@@ -23,7 +24,7 @@ fixture("old/_layout.html", `<html><head><title>Old</title></head><body><slot />
 fixture("old/page.html", `<include src="loaf-test-fixtures/_logo.html" />`);
 fixture("inner/page.html", `<p>Inside</p>`);
 // An api/ route used by the routing test, removed when the tests finish.
-const API_DIR = join(import.meta.dir, "api");
+const API_DIR = join(ROOT, "api");
 const API_FIXTURE = join(API_DIR, "loaf-test-fixture.js");
 const hadApiDir = existsSync(API_DIR);
 mkdirSync(API_DIR, { recursive: true });
@@ -58,11 +59,13 @@ const rawStatus = (path) =>
 
 test("serves pages from public/ with clean URLs", async () => {
   expect((await fetch(url("/"))).status).toBe(200);
+  expect(await text("/loaf.js")).toContain("upgradeLoafElements");
   expect(await text("/loaf-test-fixtures/untitled")).toContain("<p>No title</p>");
   expect((await fetch(url("/missing"))).status).toBe(404);
 });
 
 test("blocks path traversal, private files and null bytes", async () => {
+  expect(await rawStatus("/../loaf/server.js")).toBe(404);
   expect(await rawStatus("/../server.js")).toBe(404);
   expect(await rawStatus("/..%2fserver.js")).toBe(404);
   expect(await rawStatus("/..%2f..%2fetc%2fpasswd")).toBe(404);

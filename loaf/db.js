@@ -1,6 +1,8 @@
 import { Database } from "bun:sqlite";
+import { join } from "node:path";
 
-export const db = new Database(process.env.DB ?? "loaf.db");
+// loaf.db sits in your project folder, next to public/.
+export const db = new Database(process.env.DB ?? join(import.meta.dir, "..", "loaf.db"));
 db.run("PRAGMA journal_mode = WAL");
 
 // The automatic data API: /api/<name> works for any name, no setup needed.

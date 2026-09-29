@@ -1,9 +1,12 @@
 import { existsSync, watch } from "node:fs";
 import { join } from "node:path";
-import { dataRoutes } from "./db.js"; // db
+import { dataRoutes } from "./db.js";
 import { servePage } from "./pages.js";
 
-const API = join(import.meta.dir, "api");
+// Loaf's own code lives in loaf/. Your project is the folder around it.
+const ROOT = join(import.meta.dir, "..");
+const API = join(ROOT, "api");
+export const VERSION = (await Bun.file(join(import.meta.dir, "VERSION")).text()).trim();
 const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 
 // Every file in api/ becomes a route: api/hello.js → /api/hello, api/users/[id].js → /api/users/:id
@@ -61,7 +64,7 @@ async function config() {
     port: process.env.PORT ?? 3000,
     maxRequestBodySize: 1024 * 1024, // 1 MB, bigger uploads get a 413
     routes: guardAll({
-      ...dataRoutes, // db
+      ...(process.env.DATA === "off" ? {} : dataRoutes), // DATA=off turns off the automatic data API
       ...(await loadApiRoutes()), // your api/ files win over the data API
     }),
     fetch: servePage, // everything else: pages and files from public/
@@ -73,7 +76,7 @@ async function config() {
 }
 
 export const server = Bun.serve(await config());
-console.log(`Loaf running at ${server.url}`);
+console.log(`Loaf ${VERSION} running at ${server.url}`);
 
 // With `bun dev`, new and deleted api/ files go live without a restart.
 // (Edits to existing files already restart the server through bun --watch.)

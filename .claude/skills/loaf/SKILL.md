@@ -12,9 +12,10 @@ Loaf is a zero-dependency Bun starter. Pages are HTML fragments in `public/` wra
 - **No npm dependencies.** Don't run `npm install`, `bun add` or add a `dependencies` field. Use what Bun ships (`Bun.serve`, `bun:sqlite`, `Bun.file`, `bun test`).
 - **No build step.** Don't add Vite, bundlers, templating libraries, `tailwind.config.js`, PostCSS, or `@plugin` / `@utility` / `@import "tailwindcss"` CSS. Tailwind, daisyUI and Alpine load from the CDN in `public/_layout.html`.
 - **Plain JavaScript**, ES modules, no TypeScript.
-- Prefer the simplest layer that works: `loaf-` elements first, Alpine with `collection()` when they can't express it, an `api/` route when you need server logic, and editing `server.js` last.
+- Prefer the simplest layer that works: `loaf-` elements first, Alpine with `collection()` when they can't express it, an `api/` route when you need server logic.
+- **Never edit `loaf/`.** It's Loaf's own code and gets replaced on update (version in `loaf/VERSION`). Everything the user owns is in `public/` and `api/`. If something can only be done by changing `loaf/`, say so instead of editing it.
 - Audience: many Loaf users aren't programmers. Write pages with `loaf-` elements and daisyUI classes, and keep Alpine out of pages unless it's needed.
-- Run `bun test` after changing `server.js`, `pages.js`, `db.js` or `api/`.
+- Run `bun test` after changing `api/`.
 
 ## Project layout
 
@@ -25,12 +26,15 @@ public/           served as-is; names starting with _ are private
   _footer.html    footer
   index.html      home page (a fragment)
   demo.html       optional todo demo
-  loaf.js         loaf- elements, plus collection() and themePicker under them
 api/              one file per route; _files are helpers
-server.js         routes, cross-site guard, body limit, dev reload
-pages.js          static files, layouts, includes
-db.js             database + automatic data API
-server.test.js    tests
+loaf/             Loaf's code; don't edit, it's replaced on update
+  VERSION         the Loaf version, e.g. 0.1.0
+  server.js       routes, cross-site guard, body limit, dev reload
+  pages.js        static files, layouts, includes
+  db.js           database + automatic data API
+  loaf.js         served at /loaf.js: loaf- elements, collection(), themePicker
+  server.test.js  tests
+loaf.db           saved data (created on first run)
 ```
 
 ## Pages, layouts and includes
@@ -105,12 +109,12 @@ Records always have `id` and `created_at`; clients can't set those. Everything u
 
 Everything is one SQLite table, `records (id, collection, data JSON, created_at)`, in `loaf.db`.
 
-**It has no auth.** Anyone who can reach the site can read, change and delete everything. When a task involves users, logins, private data or a public deployment, say so, and move the endpoints that need protection into `api/` routes with checks. To turn the automatic API off, remove the `// db` lines in `server.js` (and `db.js` if nothing else uses it).
+**It has no auth.** Anyone who can reach the site can read, change and delete everything. When a task involves users, logins, private data or a public deployment, say so, and move the endpoints that need protection into `api/` routes with checks. To turn the automatic API off, start with `DATA=off` (in `.env` or the environment); `api/` routes and `db` keep working.
 
 What Loaf already enforces for every route, including `api/` files, so don't re-implement it:
 
 - Non-GET requests from another website (`Sec-Fetch-Site: cross-site`/`same-site`, or a mismatched `Origin`) get `403`. Requests with neither header (curl, servers) pass.
-- Request bodies over 1 MB get `413` (`maxRequestBodySize` in `server.js`).
+- Request bodies over 1 MB get `413` (`maxRequestBodySize` in `loaf/server.js`).
 
 ## Custom routes: `api/`
 
@@ -118,7 +122,7 @@ Each `.js` file in `api/` becomes a route. Export one function per HTTP method (
 
 ```js
 // api/users/[id].js → /api/users/:id
-import { db } from "../db.js";
+import { db } from "../loaf/db.js";
 
 db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
 
@@ -154,9 +158,9 @@ It lists the 35 built-in themes, remembers each visitor's choice in `localStorag
 
 - Demo: delete `public/demo.html` and its link in `public/_header.html`.
 - Example route: delete `api/hello.js`.
-- Database: delete `db.js` and the `// db` lines in `server.js`. `collection()` then stops working; pages and `api/` routes that don't import `db` keep working.
+- Automatic data API: set `DATA=off`. `loaf-` elements and `collection()` then stop saving; pages and `api/` routes keep working.
 - Shared layout: delete `public/_layout.html`, `_header.html`, `_footer.html`; each page then needs its own full `<html>` document.
 
 ## Settings
 
-`PORT` (default `3000`) and `DB` (default `loaf.db`, `:memory:` for throwaway) from the environment or `.env`. Scripts: `bun dev` (watch + reload new `api/` files), `bun start`, `bun test`.
+`PORT` (default `3000`), `DB` (default `loaf.db` in the project folder, `:memory:` for throwaway) and `DATA=off` (no automatic data API) from the environment or `.env`. Scripts: `bun dev` (watch + reload new `api/` files), `bun start`, `bun test`.

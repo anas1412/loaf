@@ -1,7 +1,8 @@
 import { stat } from "node:fs/promises";
 import { dirname, join, sep } from "node:path";
 
-const PUBLIC = join(import.meta.dir, "public");
+const PUBLIC = join(import.meta.dir, "..", "public");
+const LOAF_JS = join(import.meta.dir, "loaf.js");
 // Comments are matched too, so a commented-out <include> or <slot> is left alone.
 // <loaf-include> and <loaf-page> are the documented names; <include> and <slot> work too.
 const INCLUDE = /<!--[\s\S]*?-->|<(?:loaf-)?include\s+src="([^"]+)"\s*(?:\/>|><\/(?:loaf-)?include>)/gi;
@@ -30,7 +31,7 @@ export async function servePage(req) {
     return new Response("Bad Request", { status: 400 });
   }
   if (pathname.includes("\0") || pathname.split("/").some((part) => part.startsWith("_"))) return notFound();
-  const path = inPublic(pathname);
+  const path = pathname === "/loaf.js" ? LOAF_JS : inPublic(pathname);
   if (!path) return notFound();
 
   for (const candidate of [path, path + ".html", join(path, "index.html")]) {

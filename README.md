@@ -112,7 +112,7 @@ If your site saves things, they're kept in the file `loaf.db`. Ask your host for
 
 ## For developers
 
-The `loaf-` elements are built on [Alpine.js](https://alpinejs.dev), which you can use directly in any page. Every file in `api/` becomes a route (`api/hello.js` → `/api/hello`), and `.claude/skills/` teaches AI assistants how Loaf works. The [guide](https://anas1412.github.io/loaf/docs.html#developers) has the details.
+Loaf's own code is in `loaf/` (version in `loaf/VERSION`). Leave it as it is, so Loaf can be updated later; your work goes in `public/` and `api/`. The `loaf-` elements are built on [Alpine.js](https://alpinejs.dev), which you can use directly in any page. Every file in `api/` becomes a route (`api/hello.js` → `/api/hello`), and `.claude/skills/` teaches AI assistants how Loaf works. The [guide](https://anas1412.github.io/loaf/docs.html#developers) has the details.
 
 ## License
 

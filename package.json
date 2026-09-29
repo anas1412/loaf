@@ -1,10 +1,11 @@
 {
   "name": "loaf",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --watch server.js --dev",
-    "start": "bun server.js",
+    "dev": "bun --watch loaf/server.js --dev",
+    "start": "bun loaf/server.js",
     "test": "bun test"
   }
 }
