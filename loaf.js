@@ -8,7 +8,7 @@
 // Everything runs in the browser, so a Loaf site is a folder of HTML files that any
 // static host can serve, like GitHub Pages.
 
-const LOAF_VERSION = "0.3.0";
+const LOAF_VERSION = "0.3.1";
 const loafScript = document.currentScript;
 
 // The site's main folder, where _layout.html lives. A page in a sub-folder says so with
@@ -98,8 +98,10 @@ applyTheme();
 systemDark.addEventListener("change", applyTheme);
 
 // ---------- Layout and includes ----------
+// Layouts and includes are checked with the server on every visit ("no-cache"), so an updated
+// header never meets an old page. Unchanged files come back as a quick "304 Not Modified".
 async function fetchText(path) {
-  const res = await fetch(new URL(path, loafRoot));
+  const res = await fetch(new URL(path, loafRoot), { cache: "no-cache" });
   return res.ok ? res.text() : null;
 }
 
