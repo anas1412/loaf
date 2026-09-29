@@ -6,7 +6,7 @@
 
 <p align="center">Make websites and small apps by writing HTML. Nothing to set up, nothing to install.</p>
 
-<p align="center"><a href="https://anas1412.github.io/loaf/">Website</a> · <a href="https://anas1412.github.io/loaf/docs.html">Guide</a></p>
+<p align="center"><a href="https://anas1412.github.io/loaf/">Website</a> · <a href="https://anas1412.github.io/loaf/docs.html">Guide</a> · <a href="https://anas1412.github.io/loaf/tutorial.mp4">Watch: a notes app in one minute</a></p>
 
 ## Get started
 
