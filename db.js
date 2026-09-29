@@ -26,8 +26,17 @@ async function readObject(req) {
 
 export const dataRoutes = {
   "/api/:collection": {
+    // ?limit=20&offset=40 returns one page of records. Without them, you get everything.
     GET: (req) => {
-      const rows = db.query("SELECT * FROM records WHERE collection = ? ORDER BY id DESC").all(req.params.collection);
+      const params = new URL(req.url).searchParams;
+      const limit = Number(params.get("limit") ?? -1);
+      const offset = Number(params.get("offset") ?? 0);
+      if (!Number.isInteger(limit) || !Number.isInteger(offset) || limit < -1 || offset < 0) {
+        return Response.json({ error: "limit and offset must be whole numbers" }, { status: 400 });
+      }
+      const rows = db
+        .query("SELECT * FROM records WHERE collection = ? ORDER BY id DESC LIMIT ? OFFSET ?")
+        .all(req.params.collection, limit, offset);
       return Response.json(rows.map(toRecord));
     },
 

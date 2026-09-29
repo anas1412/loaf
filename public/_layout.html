@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loaf</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46/themes.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+    <script src="/loaf.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
+  </head>
+  <!-- Pages without their own html tag are placed at the slot below. -->
+  <body class="flex min-h-screen flex-col bg-base-200">
+    <include src="_header.html"></include>
+    <div class="flex-1"><slot></slot></div>
+    <include src="_footer.html"></include>
+  </body>
+</html>
