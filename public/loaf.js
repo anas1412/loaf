@@ -167,9 +167,15 @@ function upgradeLoafElements() {
     }
 
     // Alpine repeats a <template> with one element inside, so wrap the content if it has several.
-    const row = el.children.length === 1 ? el.children[0] : document.createElement("div");
-    if (row !== el.children[0]) row.append(...el.childNodes);
-    styleDefault(row, "card bg-base-100 p-4 shadow-sm");
+    // A wrapped item is a row, with its text taking the free space.
+    let row = el.children[0];
+    if (el.children.length !== 1) {
+      row = document.createElement("div");
+      row.append(...el.childNodes);
+      styleDefault(row, "flex items-center gap-3 rounded-box bg-base-100 p-4 shadow-sm");
+      for (const text of row.querySelectorAll(":scope > [field]:not(img), :scope > [edit]")) styleDefault(text, "grow");
+    }
+    styleDefault(row, "rounded-box bg-base-100 p-4 shadow-sm");
     const template = document.createElement("template");
     template.setAttribute("x-for", "item in items");
     template.setAttribute("x-bind:key", "item.id");

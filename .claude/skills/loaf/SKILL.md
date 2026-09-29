@@ -12,19 +12,20 @@ Loaf is a zero-dependency Bun starter. Pages are HTML fragments in `public/` wra
 - **No npm dependencies.** Don't run `npm install`, `bun add` or add a `dependencies` field. Use what Bun ships (`Bun.serve`, `bun:sqlite`, `Bun.file`, `bun test`).
 - **No build step.** Don't add Vite, bundlers, templating libraries, `tailwind.config.js`, PostCSS, or `@plugin` / `@utility` / `@import "tailwindcss"` CSS. Tailwind, daisyUI and Alpine load from the CDN in `public/_layout.html`.
 - **Plain JavaScript**, ES modules, no TypeScript.
-- Prefer the simplest layer that works: an HTML page with `collection()` before an `api/` route, an `api/` route before editing `server.js`.
+- Prefer the simplest layer that works: `loaf-` elements first, Alpine with `collection()` when they can't express it, an `api/` route when you need server logic, and editing `server.js` last.
+- Audience: many Loaf users aren't programmers. Write pages with `loaf-` elements and daisyUI classes, and keep Alpine out of pages unless it's needed.
 - Run `bun test` after changing `server.js`, `pages.js`, `db.js` or `api/`.
 
 ## Project layout
 
 ```
 public/           served as-is; names starting with _ are private
-  _layout.html    shared <head> and frame, has <slot></slot>
-  _header.html    navbar (with the theme picker)
+  _layout.html    shared <head> and frame; pages go in its <main> at <loaf-page>
+  _header.html    navbar (with <loaf-theme>)
   _footer.html    footer
   index.html      home page (a fragment)
   demo.html       optional todo demo
-  loaf.js         frontend helper: collection() and themePicker
+  loaf.js         loaf- elements, plus collection() and themePicker under them
 api/              one file per route; _files are helpers
 server.js         routes, cross-site guard, body limit, dev reload
 pages.js          static files, layouts, includes
@@ -35,59 +36,64 @@ server.test.js    tests
 ## Pages, layouts and includes
 
 - `public/about.html` is served at `/about`, `public/blog/index.html` at `/blog`. Anything with a path segment starting with `_` returns 404.
-- **A new page is a fragment**: no `<html>`, `<head>`, `<body>`, navbar or footer. Start it with a `<title>` (it replaces the layout's), then the content, usually in a `<main>`:
+- **A new page is a fragment**: no `<html>`, `<head>`, `<body>`, `<main>`, navbar or footer. The layout already puts it in a centered `<main>` column (`max-w-3xl`, `gap-4`). Start it with a `<title>` (it replaces the layout's), then the content:
   ```html
   <title>About · My app</title>
 
-  <main class="mx-auto max-w-3xl p-8">...</main>
+  <h1 class="text-3xl font-bold">About</h1>
+  <p>...</p>
   ```
+- A full-width section (a hero, a banner) needs a different layout: give that folder its own `_layout.html`, or change the `<main>` in `_layout.html`.
 - For page-specific `<head>` tags, start the page with a `<head>...</head>` block instead; its `<title>` replaces the layout's and the other tags are appended to the layout's `<head>`. `<title>` and `<head>` are only picked up at the very top of the file.
-- The page is inserted at the layout's `<slot></slot>`. The nearest `_layout.html` wins, looking in the page's folder first, then each parent up to `public/`.
+- The page is inserted at the layout's `<loaf-page></loaf-page>` (`<slot></slot>` also works). The nearest `_layout.html` wins, looking in the page's folder first, then each parent up to `public/`.
 - A page with its own `<html>` tag skips the layout.
-- `<include src="_navbar.html"></include>` (or `<include src="..." />`) pastes a file in place. `src` is relative to `public/`, not to the current file. Includes nest up to 10 levels; a missing file becomes an HTML comment and a terminal warning. Anything inside `<!-- -->` is ignored.
+- `<loaf-include src="_navbar.html"></loaf-include>` pastes a file in place (`<include>` also works). `src` is relative to `public/`, not to the current file. Includes nest up to 10 levels; a missing file becomes an HTML comment and a terminal warning. Anything inside `<!-- -->` is ignored.
 - Shared pieces go in `_` files (`_header.html`, `_card.html`...). Add nav links to `_header.html`. Don't copy the layout's `<head>` into pages.
 - Rendered HTML is sent with `Cache-Control: no-cache`; other files with `Last-Modified` and 304s.
 
-## Saving data from HTML: `collection()`
-
-For lists of things (posts, todos, contacts), use `collection('name')` instead of writing fetch code or routes. The name is created on first save.
+## Saving data: `loaf-` elements (use these first)
 
 ```html
-<div x-data="collection('posts')">
-  <form @submit.prevent="add($el)">
-    <input name="title" class="input" required>
-    <input name="featured" type="checkbox" class="checkbox">
-    <button class="btn btn-primary" :disabled="saving">Add</button>
-  </form>
+<title>Notes</title>
 
-  <p x-show="error" x-text="error" class="text-error"></p>
-  <p x-show="!loading && !items.length">No posts yet.</p>
+<loaf-form name="notes">
+  <input name="text" placeholder="Write a note" required>
+  <button>Save</button>
+</loaf-form>
 
-  <template x-for="post in items" :key="post.id">
-    <article>
-      <h2 x-text="post.title"></h2>
-      <button class="btn btn-sm" @click="update(post, { pinned: !post.pinned })">Pin</button>
-      <button class="btn btn-sm" @click="remove(post)">Delete</button>
-    </article>
-  </template>
-</div>
+<loaf-empty name="notes">No notes yet.</loaf-empty>
+
+<loaf-list name="notes">
+  <p field="text"></p>
+</loaf-list>
 ```
+
+- Elements with the same `name` share one collection, loaded once per page. No wrapper element is needed; put them anywhere on the page.
+- `<loaf-form name>` becomes a `<form>` that saves its named fields, then resets. Checkboxes save booleans, number inputs numbers, the rest strings. Its submit button is disabled while saving.
+- `<loaf-list name>` repeats its content per record, newest first. Several children are wrapped in one `<div>`. Inside it, the current record is `item`:
+  - `field="key"` shows `item.key` as text (`created_at` as a local date; on an `<img>` it sets `src`).
+  - `edit="key"` shows it and makes it click-to-edit; saves on blur or Enter.
+  - `toggle="key"` on an input makes it a checkbox that saves `true`/`false`.
+  - `remove` on a button deletes the record.
+  - Any Alpine attribute can use `item`, e.g. `:class="item.done && 'line-through'"`.
+- `<loaf-count name>` shows the number of records; `<loaf-empty name>` shows only when there are none.
+- `<loaf-theme>` is the theme menu (a daisyUI `select`).
+- **Default styling:** an element without a `class` gets daisyUI's look: form inputs `input grow`, textareas `textarea w-full`, selects `select`, buttons `btn btn-primary`, the form `flex flex-wrap items-center gap-2`, the list `flex flex-col gap-3`, each list item `rounded-box bg-base-100 p-4 shadow-sm` (several children are wrapped in a row: `flex items-center gap-3 rounded-box bg-base-100 p-4 shadow-sm`, and their unstyled `field`/`edit` children get `grow`; not daisyUI `card`, which outlines itself when it holds a checked checkbox), `remove` buttons `btn btn-ghost btn-sm`, `toggle` inputs `checkbox`. Adding any `class` replaces the default for that element, so include the daisyUI classes you still want.
+- Elements are converted when Alpine starts, so they must be in the page HTML (layouts and includes count). Don't create them later with JavaScript.
+
+## `collection()` in Alpine (when the elements aren't enough)
+
+`loaf-` elements are built on `x-data="collection('name')"`, which exposes:
 
 | Name | What it does |
 |---|---|
 | `items` | records, newest first |
-| `add($el)` | on a `<form>`: saves its named fields, then resets the form |
-| `add({ ... })` | saves an object |
+| `add($el)` / `add({ ... })` | saves a form's named fields (then resets it), or an object |
 | `update(item, { ... })` | merges only the given fields; `null` removes a field |
 | `remove(item)` | deletes the record |
-| `loading` | `true` until the first load finishes |
-| `saving` | `true` while `add()` runs; repeat calls are ignored |
-| `error` | last error message or `null` |
+| `loading`, `saving`, `error` | first load pending, `add()` running, last error message or `null` |
 
-- Records always have `id` and `created_at`; clients can't set those.
-- `add($el)` turns checkboxes into booleans, `type="number"`/`range` into numbers (empty → `null`), radios into the checked value, everything else into strings. File inputs are skipped.
-- All `collection('posts')` components on one page share one state, loaded once. Use a second one for a counter (`x-text="items.length"`) instead of passing data around.
-- The page's collections are loaded when the page loads; there's no live sync with other tabs or users.
+Records always have `id` and `created_at`; clients can't set those. Everything using the same name on a page shares one state.
 
 ## The data API
 
@@ -140,11 +146,7 @@ Use daisyUI components (`btn`, `input`, `card`, `navbar`, `menu`, `table`, `aler
 - Ignore the daisyui skill's advice to install daisyUI with npm or to customize components with `@plugin` / `@utility`. Those need a build step.
 - Direct children of daisyUI's `footer` become grid cells; wrap inline text in `<aside><p>...</p></aside>`.
 
-Theme picker (in `_header.html`, needs `loaf.js`):
-
-```html
-<select x-data="themePicker" class="select select-sm" aria-label="Theme"></select>
-```
+Theme picker (in `_header.html`, needs `loaf.js`): `<loaf-theme></loaf-theme>`, which becomes `<select x-data="themePicker">`.
 
 It lists the 35 built-in themes, remembers each visitor's choice in `localStorage`, and otherwise uses `<html data-theme="...">` if set, or light/dark following the device. To set a default theme, put `data-theme="coffee"` (or any theme) on `<html>` in `_layout.html`. A custom theme is a plain `<style>` block defining daisyUI's variables under `[data-theme="mytheme"]`: `color-scheme`, `--color-base-100/200/300`, `--color-base-content`, `--color-primary` and `--color-primary-content` (plus secondary, accent, neutral), `--radius-box`, `--radius-field`, `--radius-selector`.
 

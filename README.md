@@ -28,13 +28,11 @@ Create `public/about.html`:
 ```html
 <title>About me</title>
 
-<main class="p-8">
-  <h1 class="text-3xl font-bold">Hi, I'm Sam</h1>
-  <p>I bake bread and build websites.</p>
-</main>
+<h1 class="text-3xl font-bold">Hi, I'm Sam</h1>
+<p>I bake bread and build websites.</p>
 ```
 
-Open http://localhost:3000/about. The header and footer are added for you.
+Open http://localhost:3000/about. The header, footer and page frame are added for you.
 
 ## Change the header and footer
 
@@ -42,43 +40,61 @@ Every page shares them:
 
 - `public/_header.html`: your logo, links and the theme menu
 - `public/_footer.html`: the bottom of every page
-- `public/_layout.html`: the rest of the page frame
+- `public/_layout.html`: the page frame around them
 
-Add a link to your new page in `_header.html` and it shows up everywhere.
+Add a link to your new page in `_header.html` and it shows up everywhere. To reuse any piece on several pages, put it in a file starting with `_` and drop it in with `<loaf-include src="_contact.html"></loaf-include>`.
 
 ## Save things
 
-Make a notes app with a few lines. Create `public/notes.html`:
+A whole notes app. Create `public/notes.html`:
 
 ```html
 <title>Notes</title>
 
-<main x-data="collection('notes')" class="mx-auto max-w-md p-8">
-  <form @submit.prevent="add($el)" class="flex gap-2">
-    <input name="text" class="input w-full" placeholder="Write a note" required>
-    <button class="btn btn-primary">Save</button>
-  </form>
+<loaf-form name="notes">
+  <input name="text" placeholder="Write a note">
+  <button>Save</button>
+</loaf-form>
 
-  <template x-for="note in items">
-    <p class="card bg-base-100 mt-3 p-4" x-text="note.text"></p>
-  </template>
-</main>
+<loaf-list name="notes">
+  <p field="text"></p>
+</loaf-list>
 ```
 
-- `collection('notes')` keeps your notes. Use any name: `recipes`, `contacts`, `ideas`.
-- `add($el)` saves what's in the form.
-- `items` is everything you saved.
+- `<loaf-form name="notes">` saves what you type. The name can be anything: `recipes`, `contacts`, `ideas`.
+- `<loaf-list name="notes">` shows everything saved, newest first.
+- `field="text"` shows the input named `text`.
 
-Notes stay after you refresh or restart. See the [guide](https://anas1412.github.io/loaf/docs.html#saving) for editing and deleting.
+Notes stay after you refresh or restart.
+
+Inside a `<loaf-list>` you can also use:
+
+| Add this                             | What it does                          |
+|--------------------------------------|---------------------------------------|
+| `<p edit="text"></p>`                | shows the text; click it to change it |
+| `<input toggle="done">`              | a checkbox that remembers             |
+| `<button remove>Delete</button>`     | deletes the item                      |
+| `<p field="created_at"></p>`         | when it was saved                     |
+
+And anywhere on the page:
+
+- `<loaf-count name="notes"></loaf-count>` shows how many there are.
+- `<loaf-empty name="notes">No notes yet.</loaf-empty>` shows only when there are none.
 
 > Anyone who can open your site can see and change what's saved. Keep private things out of it.
 
 ## Make it look good
 
-Use ready-made pieces like buttons, cards and menus from [daisyUI](https://daisyui.com/components/):
+Loaf comes with [daisyUI](https://daisyui.com/components/), a set of ready-made pieces: buttons, cards, menus, tabs, modals, alerts and more. Forms and lists already use it, so they look good with no extra work.
+
+To add a piece, copy it from the daisyUI site and paste it into your page:
 
 ```html
 <button class="btn btn-primary">Click me</button>
+
+<div class="card bg-base-100 shadow-sm">
+  <div class="card-body">A card</div>
+</div>
 ```
 
 Pick a theme from the menu in the header. There are 35. To choose one for everyone, open `_layout.html` and change `<html lang="en">` to `<html lang="en" data-theme="coffee">`.
@@ -96,7 +112,7 @@ If your site saves things, they're kept in the file `loaf.db`. Ask your host for
 
 ## For developers
 
-Every file in `api/` becomes a route (`api/hello.js` → `/api/hello`), and `.claude/skills/` teaches AI assistants how Loaf works. The [guide](https://anas1412.github.io/loaf/docs.html#developers) has the details.
+The `loaf-` elements are built on [Alpine.js](https://alpinejs.dev), which you can use directly in any page. Every file in `api/` becomes a route (`api/hello.js` → `/api/hello`), and `.claude/skills/` teaches AI assistants how Loaf works. The [guide](https://anas1412.github.io/loaf/docs.html#developers) has the details.
 
 ## License
 
