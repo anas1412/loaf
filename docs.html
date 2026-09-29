@@ -90,7 +90,7 @@
 </section>
 <section id="pages" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Add a page</h2>
 <p>Create <code>about.html</code>:</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">about.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js&quot;&gt;&lt;/script&gt;
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">about.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js&quot;&gt;&lt;/script&gt;
 &lt;title&gt;About me&lt;/title&gt;
 
 &lt;h1 class=&quot;text-3xl font-bold&quot;&gt;Hi, I&#x27;m Sam&lt;/h1&gt;
@@ -108,11 +108,11 @@
 <figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;loaf-include src=&quot;_contact-card.html&quot;&gt;&lt;/loaf-include&gt;</code></pre></figure>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Pages in a folder</h3>
 <p>A page like <code>blog/first-post.html</code> needs to know where the main folder is. Add <code>data-root=&quot;../&quot;</code> to its first line:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js&quot; data-root=&quot;../&quot;&gt;&lt;/script&gt;</code></pre></figure>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js&quot; data-root=&quot;../&quot;&gt;&lt;/script&gt;</code></pre></figure>
 </section>
 <section id="saving" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Save things</h2>
 <p>Here's a whole notes app. Create <code>notes.html</code>:</p>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">notes.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js&quot;&gt;&lt;/script&gt;
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">notes.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js&quot;&gt;&lt;/script&gt;
 &lt;title&gt;Notes&lt;/title&gt;
 
 &lt;loaf-form name=&quot;notes&quot;&gt;
@@ -131,7 +131,7 @@
 <p>And these anywhere on the page:</p>
 <div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Add this</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>&lt;loaf-count name=&quot;notes&quot;&gt;&lt;/loaf-count&gt;</code></td><td class="align-top">how many there are</td></tr><tr><td class="align-top"><code>&lt;loaf-empty name=&quot;notes&quot;&gt;No notes yet.&lt;/loaf-empty&gt;</code></td><td class="align-top">shows only when there are none</td></tr></tbody></table></div>
 <h3 class="mt-8 mb-2 text-xl font-semibold">A todo list</h3>
-<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">todos.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.2/loaf.js&quot;&gt;&lt;/script&gt;
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">todos.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/anas1412/loaf@0.3/loaf.js&quot;&gt;&lt;/script&gt;
 &lt;title&gt;Todos&lt;/title&gt;
 
 &lt;loaf-form name=&quot;todos&quot;&gt;
@@ -172,7 +172,7 @@
 <p>Keep the empty <code>.nojekyll</code> file: without it, GitHub Pages skips the files starting with <code>_</code>.</p>
 </section>
 <section id="update" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Update Loaf</h2>
-<p>The first line of each page loads Loaf <code>0.2</code>, which includes every 0.2 fix automatically. When a new version like <code>0.3</code> comes out, change <code>@0.2</code> to <code>@0.3</code> on your pages.</p>
+<p>The first line of each page loads Loaf <code>0.3</code>, which gets every 0.3 fix automatically. New features come in new versions like <code>0.4</code>: to use them, change <code>@0.3</code> to <code>@0.4</code> on your pages.</p>
 </section>
 <section id="remove" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Remove what you don't need</h2>
 <ul class="my-4 list-disc space-y-2 pl-5"><li>The demo: delete <code>demo.html</code> and its link in <code>_header.html</code>.</li><li>The tests: delete the <code>test/</code> folder.</li></ul>
