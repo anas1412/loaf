@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46/themes.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
-    <script src="loaf.js"></script>
+    <script src="loaf.js?v=b4fd4410"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
     <style>
       /* The site's own daisyUI theme. Every other theme works too, via the picker. */
@@ -59,7 +59,7 @@
           <li><a href="docs.html" class="btn btn-ghost btn-sm btn-active" aria-current="page">Guide</a></li>
           <li><a href="https://github.com/anas1412/loaf" class="btn btn-ghost btn-sm">GitHub</a></li>
         </ul>
-        <select x-data="themePicker" class="select select-sm w-40" aria-label="Theme"></select>
+        <loaf-theme class="select select-sm w-40"></loaf-theme>
       </nav>
     </header>
     <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 pt-6 pb-16 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)]">
@@ -89,56 +89,66 @@ bun dev</code></pre></figure>
 <p>Every file in <code>public/</code> is a page. Create <code>public/about.html</code>:</p>
 <figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">public/about.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;title&gt;About me&lt;/title&gt;
 
-&lt;main class=&quot;p-8&quot;&gt;
-  &lt;h1 class=&quot;text-3xl font-bold&quot;&gt;Hi, I&#x27;m Sam&lt;/h1&gt;
-  &lt;p&gt;I bake bread and build websites.&lt;/p&gt;
-&lt;/main&gt;</code></pre></figure>
-<p>Open <code>localhost:3000/about</code>. The header and footer are added for you, so a page only needs its own content. The <code>&lt;title&gt;</code> at the top is the name in the browser tab.</p>
+&lt;h1 class=&quot;text-3xl font-bold&quot;&gt;Hi, I&#x27;m Sam&lt;/h1&gt;
+&lt;p&gt;I bake bread and build websites.&lt;/p&gt;</code></pre></figure>
+<p>Open <code>localhost:3000/about</code>. The header, footer and page frame are added for you, so a page only needs its own content. The <code>&lt;title&gt;</code> at the top is the name in the browser tab.</p>
 <p>Pages in folders work too: <code>public/blog/first-post.html</code> opens at <code>/blog/first-post</code>.</p>
 </section>
 <section id="header" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Header and footer</h2>
 <p>Every page shares these files:</p>
-<ul class="my-4 list-disc space-y-2 pl-5"><li><code>public/_header.html</code>: your logo, links and the theme menu</li><li><code>public/_footer.html</code>: the bottom of every page</li><li><code>public/_layout.html</code>: the rest of the page frame</li></ul>
+<ul class="my-4 list-disc space-y-2 pl-5"><li><code>public/_header.html</code>: your logo, links and the theme menu</li><li><code>public/_footer.html</code>: the bottom of every page</li><li><code>public/_layout.html</code>: the page frame around them</li></ul>
 <p>Add a link to your new page in <code>_header.html</code> and it shows up everywhere:</p>
 <figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">public/_header.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;li&gt;&lt;a href=&quot;/about&quot;&gt;About&lt;/a&gt;&lt;/li&gt;</code></pre></figure>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Reuse any piece</h3>
 <p>Put something you use on several pages in its own file whose name starts with <code>_</code>, then drop it in wherever you want it:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;include src=&quot;_contact-card.html&quot;&gt;&lt;/include&gt;</code></pre></figure>
+<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;loaf-include src=&quot;_contact-card.html&quot;&gt;&lt;/loaf-include&gt;</code></pre></figure>
 </section>
 <section id="saving" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Save things</h2>
 <p>Here's a whole notes app. Create <code>public/notes.html</code>:</p>
 <figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">public/notes.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;title&gt;Notes&lt;/title&gt;
 
-&lt;main x-data=&quot;collection(&#x27;notes&#x27;)&quot; class=&quot;mx-auto max-w-md p-8&quot;&gt;
-  &lt;form @submit.prevent=&quot;add($el)&quot; class=&quot;flex gap-2&quot;&gt;
-    &lt;input name=&quot;text&quot; class=&quot;input w-full&quot; placeholder=&quot;Write a note&quot; required&gt;
-    &lt;button class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
-  &lt;/form&gt;
+&lt;loaf-form name=&quot;notes&quot;&gt;
+  &lt;input name=&quot;text&quot; placeholder=&quot;Write a note&quot;&gt;
+  &lt;button&gt;Save&lt;/button&gt;
+&lt;/loaf-form&gt;
 
-  &lt;template x-for=&quot;note in items&quot;&gt;
-    &lt;p class=&quot;card bg-base-100 mt-3 p-4&quot; x-text=&quot;note.text&quot;&gt;&lt;/p&gt;
-  &lt;/template&gt;
-&lt;/main&gt;</code></pre></figure>
-<ul class="my-4 list-disc space-y-2 pl-5"><li><code>collection(&#x27;notes&#x27;)</code> keeps your notes. Use any name: <code>recipes</code>, <code>contacts</code>, <code>ideas</code>.</li><li><code>add($el)</code> saves what's in the form. Every field with a <code>name</code> is saved.</li><li><code>items</code> is everything you saved, newest first.</li></ul>
+&lt;loaf-list name=&quot;notes&quot;&gt;
+  &lt;p field=&quot;text&quot;&gt;&lt;/p&gt;
+&lt;/loaf-list&gt;</code></pre></figure>
+<ul class="my-4 list-disc space-y-2 pl-5"><li><code>&lt;loaf-form name=&quot;notes&quot;&gt;</code> saves what you type. The name can be anything: <code>recipes</code>, <code>contacts</code>, <code>ideas</code>.</li><li><code>&lt;loaf-list name=&quot;notes&quot;&gt;</code> shows everything saved, newest first.</li><li><code>field=&quot;text&quot;</code> shows the input named <code>text</code>.</li></ul>
 <p>Notes stay after you refresh or restart.</p>
-<h3 class="mt-8 mb-2 text-xl font-semibold">Edit and delete</h3>
-<p>Add buttons next to each note:</p>
-<figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;template x-for=&quot;note in items&quot;&gt;
-  &lt;div class=&quot;card bg-base-100 mt-3 p-4&quot;&gt;
-    &lt;p x-text=&quot;note.text&quot;&gt;&lt;/p&gt;
-    &lt;button class=&quot;btn btn-sm&quot; @click=&quot;update(note, { text: &#x27;Edited!&#x27; })&quot;&gt;Edit&lt;/button&gt;
-    &lt;button class=&quot;btn btn-sm&quot; @click=&quot;remove(note)&quot;&gt;Delete&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</code></pre></figure>
+<h3 class="mt-8 mb-2 text-xl font-semibold">More things a list can do</h3>
+<p>Put these inside a <code>&lt;loaf-list&gt;</code>:</p>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Add this</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>&lt;p edit=&quot;text&quot;&gt;&lt;/p&gt;</code></td><td class="align-top">shows the text; click it to change it</td></tr><tr><td class="align-top"><code>&lt;input toggle=&quot;done&quot;&gt;</code></td><td class="align-top">a checkbox that remembers</td></tr><tr><td class="align-top"><code>&lt;button remove&gt;Delete&lt;/button&gt;</code></td><td class="align-top">deletes the item</td></tr><tr><td class="align-top"><code>&lt;p field=&quot;created_at&quot;&gt;&lt;/p&gt;</code></td><td class="align-top">when it was saved</td></tr></tbody></table></div>
+<p>And these anywhere on the page:</p>
+<div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Add this</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>&lt;loaf-count name=&quot;notes&quot;&gt;&lt;/loaf-count&gt;</code></td><td class="align-top">how many there are</td></tr><tr><td class="align-top"><code>&lt;loaf-empty name=&quot;notes&quot;&gt;No notes yet.&lt;/loaf-empty&gt;</code></td><td class="align-top">shows only when there are none</td></tr></tbody></table></div>
+<h3 class="mt-8 mb-2 text-xl font-semibold">A todo list</h3>
+<figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">public/todos.html</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;title&gt;Todos&lt;/title&gt;
+
+&lt;loaf-form name=&quot;todos&quot;&gt;
+  &lt;input name=&quot;text&quot; placeholder=&quot;What needs doing?&quot;&gt;
+  &lt;button&gt;Add&lt;/button&gt;
+&lt;/loaf-form&gt;
+
+&lt;loaf-empty name=&quot;todos&quot;&gt;Nothing to do yet.&lt;/loaf-empty&gt;
+
+&lt;loaf-list name=&quot;todos&quot;&gt;
+  &lt;input toggle=&quot;done&quot;&gt;
+  &lt;span edit=&quot;text&quot;&gt;&lt;/span&gt;
+  &lt;button remove&gt;Delete&lt;/button&gt;
+&lt;/loaf-list&gt;</code></pre></figure>
 <div role="alert" class="alert alert-warning alert-soft my-6 block"><p>Anyone who can open your site can see and change what's saved. Keep private things out of it.</p></div>
 </section>
 <section id="looks" class="scroll-mt-8 border-t border-base-300 py-10"><h2 class="mb-4 text-3xl font-bold tracking-tight">Make it look good</h2>
-<p>Use ready-made pieces from <a class="link link-primary" href="https://daisyui.com/components/">daisyUI</a>: buttons, cards, menus, forms and more. Copy one, paste it into your page:</p>
+<p>Loaf comes with <a class="link link-primary" href="https://daisyui.com/components/">daisyUI</a>, a set of ready-made pieces: buttons, cards, menus, tabs, modals, alerts and more. Forms and lists already use it, so they look good with no extra work.</p>
+<p>To add a piece, find it on the daisyUI site, copy it, and paste it into your page:</p>
 <figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;button class=&quot;btn btn-primary&quot;&gt;Click me&lt;/button&gt;
 
 &lt;div class=&quot;card bg-base-100 shadow-sm&quot;&gt;
   &lt;div class=&quot;card-body&quot;&gt;A card&lt;/div&gt;
-&lt;/div&gt;</code></pre></figure>
+&lt;/div&gt;
+
+&lt;div role=&quot;alert&quot; class=&quot;alert alert-success&quot;&gt;Saved!&lt;/div&gt;</code></pre></figure>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Themes</h3>
 <p>Pick one of 35 themes from the menu in the header. To choose one for everyone, open <code>_layout.html</code> and change <code>&lt;html lang=&quot;en&quot;&gt;</code> to:</p>
 <figure class="my-5 min-w-0"><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>&lt;html lang=&quot;en&quot; data-theme=&quot;coffee&quot;&gt;</code></pre></figure>
@@ -157,11 +167,13 @@ bun dev</code></pre></figure>
 <p>Every <code>.js</code> file in <code>api/</code> becomes a route. Export a function per method, or <code>export default</code> one function for all of them:</p>
 <figure class="my-5 min-w-0"><figcaption class="mb-2 font-mono text-sm text-base-content/70">api/users/[id].js → /api/users/:id</figcaption><pre class="overflow-x-auto rounded-xl bg-base-200 p-5 font-mono text-[13px] leading-6 border border-base-300 sm:text-sm"><code>export const GET = (req) =&gt; Response.json({ id: req.params.id });</code></pre></figure>
 <ul class="my-4 list-disc space-y-2 pl-5"><li>Files starting with <code>_</code> are helpers, not routes.</li><li>Your routes win over the built-in data routes.</li><li>With <code>bun dev</code>, new files go live without a restart.</li><li>Import the database with <code>import { db } from &quot;../db.js&quot;</code>. It's a <a class='link link-primary' href='https://bun.sh/docs/api/sqlite'>bun:sqlite</a> database.</li></ul>
-<h3 class="mt-8 mb-2 text-xl font-semibold">The data behind collection()</h3>
+<h3 class="mt-8 mb-2 text-xl font-semibold">Alpine and collection()</h3>
+<p>The <code>loaf-</code> elements are built on <a class='link link-primary' href='https://alpinejs.dev'>Alpine.js</a>, which works in any page. <code>x-data=&quot;collection(&#x27;notes&#x27;)&quot;</code> gives you <code>items</code>, <code>add()</code>, <code>update()</code>, <code>remove()</code>, <code>loading</code>, <code>saving</code> and <code>error</code>. Inside <code>&lt;loaf-list&gt;</code>, the current item is <code>item</code>, so Alpine attributes like <code>:class=&quot;item.done &amp;&amp; &#x27;line-through&#x27;&quot;</code> work there too.</p>
+<h3 class="mt-8 mb-2 text-xl font-semibold">The data behind it</h3>
 <div class="my-5 overflow-x-auto"><table class="table text-base"><thead><tr><th>Request</th><th>What it does</th></tr></thead><tbody><tr><td class="align-top"><code>GET /api/notes</code></td><td class="align-top">list, newest first. Add <code>?limit=20&amp;offset=40</code> for one page.</td></tr><tr><td class="align-top"><code>POST /api/notes</code></td><td class="align-top">save the JSON object in the body</td></tr><tr><td class="align-top"><code>GET /api/notes/5</code></td><td class="align-top">get one</td></tr><tr><td class="align-top"><code>PATCH /api/notes/5</code></td><td class="align-top">change the fields sent, <code>null</code> removes one</td></tr><tr><td class="align-top"><code>DELETE /api/notes/5</code></td><td class="align-top">delete it</td></tr></tbody></table></div>
 <p>Loaf blocks changes coming from other websites and caps uploads at 1 MB. To turn this data off entirely, delete <code>db.js</code> and the lines marked <code>// db</code> in <code>server.js</code>.</p>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Layouts</h3>
-<ul class="my-4 list-disc space-y-2 pl-5"><li>A page is placed at <code>&lt;slot&gt;&lt;/slot&gt;</code> in the nearest <code>_layout.html</code>, so a folder can have its own.</li><li>A page that starts with its own <code>&lt;html&gt;</code> tag skips the layout.</li><li>For extra tags in one page's head, start the page with a <code>&lt;head&gt;</code> block.</li></ul>
+<ul class="my-4 list-disc space-y-2 pl-5"><li>A page is placed at <code>&lt;loaf-page&gt;&lt;/loaf-page&gt;</code> in the nearest <code>_layout.html</code>, so a folder can have its own.</li><li>A page that starts with its own <code>&lt;html&gt;</code> tag skips the layout.</li><li>For extra tags in one page's head, start the page with a <code>&lt;head&gt;</code> block.</li></ul>
 <h3 class="mt-8 mb-2 text-xl font-semibold">Settings and AI</h3>
 <ul class="my-4 list-disc space-y-2 pl-5"><li><code>PORT</code> (default <code>3000</code>) and <code>DB</code> (default <code>loaf.db</code>) can be set in <code>.env</code>.</li><li><code>bun test</code> runs the tests.</li><li><code>.claude/skills/</code> teaches AI assistants how Loaf works. Update the daisyUI one with <code>curl -sL https://daisyui.com/llms.txt -o .claude/skills/daisyui/SKILL.md</code>.</li></ul>
 </section>

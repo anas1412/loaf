@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.46/themes.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
-    <script src="loaf.js"></script>
+    <script src="loaf.js?v=b4fd4410"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
     <style>
       /* The site's own daisyUI theme. Every other theme works too, via the picker. */
@@ -59,7 +59,7 @@
           <li><a href="docs.html" class="btn btn-ghost btn-sm">Guide</a></li>
           <li><a href="https://github.com/anas1412/loaf" class="btn btn-ghost btn-sm">GitHub</a></li>
         </ul>
-        <select x-data="themePicker" class="select select-sm w-40" aria-label="Theme"></select>
+        <loaf-theme class="select select-sm w-40"></loaf-theme>
       </nav>
     </header>
     <main class="mx-auto max-w-6xl px-4 sm:px-8">
@@ -110,21 +110,22 @@ bun dev</code></pre>
             <p class="text-base-content/80">Create a file in <code class="font-mono text-secondary">public/</code>. The header and footer are added for you.</p>
             <pre class="mt-auto overflow-x-auto rounded-box border border-base-300 bg-base-200 p-4 font-mono text-[13px] leading-6"><code>&lt;title&gt;About me&lt;/title&gt;
 
-&lt;main class=&quot;p-8&quot;&gt;
-  &lt;h1&gt;Hi, I&#x27;m Sam&lt;/h1&gt;
-&lt;/main&gt;</code></pre>
+&lt;h1&gt;Hi, I&#x27;m Sam&lt;/h1&gt;
+&lt;p&gt;I bake bread.&lt;/p&gt;</code></pre>
           </li>
           
           <li class="flex flex-col gap-3">
             <p class="text-sm font-semibold text-primary">Step 3</p>
             <h3 class="text-2xl font-bold">Save things</h3>
-            <p class="text-base-content/80">Add <code class="font-mono text-secondary">collection('notes')</code> and your form remembers what people type.</p>
-            <pre class="mt-auto overflow-x-auto rounded-box border border-base-300 bg-base-200 p-4 font-mono text-[13px] leading-6"><code>&lt;main x-data=&quot;collection(&#x27;notes&#x27;)&quot;&gt;
-  &lt;form @submit.prevent=&quot;add($el)&quot;&gt;
-    &lt;input name=&quot;text&quot;&gt;
-    &lt;button&gt;Save&lt;/button&gt;
-  &lt;/form&gt;
-&lt;/main&gt;</code></pre>
+            <p class="text-base-content/80">A form that saves, and a list that shows what's saved. That's a notes app.</p>
+            <pre class="mt-auto overflow-x-auto rounded-box border border-base-300 bg-base-200 p-4 font-mono text-[13px] leading-6"><code>&lt;loaf-form name=&quot;notes&quot;&gt;
+  &lt;input name=&quot;text&quot;&gt;
+  &lt;button&gt;Save&lt;/button&gt;
+&lt;/loaf-form&gt;
+
+&lt;loaf-list name=&quot;notes&quot;&gt;
+  &lt;p field=&quot;text&quot;&gt;&lt;/p&gt;
+&lt;/loaf-list&gt;</code></pre>
           </li>
         </ol>
       </section>
@@ -146,7 +147,7 @@ bun dev</code></pre>
           </li>
           <li>
             <p class="text-lg font-semibold">Looks good already</p>
-            <p class="mt-1 text-base-content/70">Ready-made buttons, cards and menus, and 35 themes to pick from.</p>
+            <p class="mt-1 text-base-content/70">Comes with <a href="https://daisyui.com/components/" class="link">daisyUI</a>: ready-made buttons, cards, menus and more, plus 35 themes to pick from.</p>
           </li>
         </ul>
       </section>
