@@ -3,8 +3,9 @@ import { dirname, join, sep } from "node:path";
 
 const PUBLIC = join(import.meta.dir, "public");
 // Comments are matched too, so a commented-out <include> or <slot> is left alone.
-const INCLUDE = /<!--[\s\S]*?-->|<include\s+src="([^"]+)"\s*(?:\/>|><\/include>)/gi;
-const SLOT = /<!--[\s\S]*?-->|<slot\s*(?:\/>|><\/slot>)/gi;
+// <loaf-include> and <loaf-page> are the documented names; <include> and <slot> work too.
+const INCLUDE = /<!--[\s\S]*?-->|<(?:loaf-)?include\s+src="([^"]+)"\s*(?:\/>|><\/(?:loaf-)?include>)/gi;
+const SLOT = /<!--[\s\S]*?-->|<loaf-page\s*(?:\/>|><\/loaf-page>)|<slot\s*(?:\/>|><\/slot>)/gi;
 
 const notFound = () => new Response("Not Found", { status: 404 });
 
@@ -48,7 +49,7 @@ export async function servePage(req) {
   return notFound();
 }
 
-// A page without an <html> tag is a fragment: it goes into the nearest _layout.html at <slot></slot>.
+// A page without an <html> tag is a fragment: it goes into the nearest _layout.html at <loaf-page></loaf-page>.
 export async function renderPage(file) {
   let html = await Bun.file(file).text();
   if (!/<html[\s>]/i.test(html)) {
@@ -89,7 +90,7 @@ async function findLayout(dir) {
   return null;
 }
 
-// Replaces <include src="_navbar.html"></include> with that file from public/, and the includes inside it.
+// Replaces <loaf-include src="_navbar.html"></loaf-include> with that file from public/, and the includes inside it.
 async function withIncludes(html, depth = 0) {
   const sources = [...html.matchAll(INCLUDE)].map((match) => match[1]).filter(Boolean);
   if (!sources.length) return html;

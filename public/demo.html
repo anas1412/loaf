@@ -1,28 +1,18 @@
 <title>Todos · Loaf</title>
 
-<!-- This whole app is HTML. The data lives at /api/todos, created on first save. -->
-<main x-data="collection('todos')" class="mx-auto max-w-md px-4 py-12">
-  <div class="card bg-base-100 shadow-sm">
-    <div class="card-body gap-4">
-      <h1 class="card-title text-2xl">Todos</h1>
+<h1 class="text-3xl font-bold">Todos <span class="badge"><loaf-count name="todos"></loaf-count></span></h1>
 
-      <form @submit.prevent="add($el)" class="join w-full">
-        <input name="text" required placeholder="What needs doing?" aria-label="New todo" class="input join-item w-full" />
-        <button :disabled="saving" class="btn btn-primary join-item">Add</button>
-      </form>
+<loaf-form name="todos">
+  <input name="text" placeholder="What needs doing?" required>
+  <button>Add</button>
+</loaf-form>
 
-      <div x-show="error" role="alert" class="alert alert-error alert-soft"><span x-text="error"></span></div>
-      <p x-show="!loading && !items.length" class="text-base-content/60">Nothing to do yet.</p>
+<loaf-empty name="todos">Nothing to do yet.</loaf-empty>
 
-      <ul class="list">
-        <template x-for="todo in items" :key="todo.id">
-          <li class="list-row items-center">
-            <input type="checkbox" :checked="todo.done" @change="update(todo, { done: $el.checked })" aria-label="Done" class="checkbox checkbox-primary" />
-            <span x-text="todo.text" :class="todo.done && 'line-through opacity-50'" class="list-col-grow break-words"></span>
-            <button @click="remove(todo)" aria-label="Delete todo" class="btn btn-square btn-ghost btn-sm">✕</button>
-          </li>
-        </template>
-      </ul>
-    </div>
+<loaf-list name="todos">
+  <div class="card bg-base-100 flex-row items-center gap-3 p-4 shadow-sm">
+    <input toggle="done">
+    <span edit="text" class="grow"></span>
+    <button remove>✕</button>
   </div>
-</main>
+</loaf-list>

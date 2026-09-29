@@ -7,9 +7,10 @@ import { join } from "node:path";
 // Pages used by the layout tests, removed when the tests finish.
 const FIXTURES = join(import.meta.dir, "public", "loaf-test-fixtures");
 mkdirSync(join(FIXTURES, "inner"), { recursive: true });
+mkdirSync(join(FIXTURES, "old"), { recursive: true });
 const fixture = (name, html) => writeFileSync(join(FIXTURES, name), html);
 fixture("_layout.html", `<html><head><title>Layout</title></head><body><!-- <slot></slot> <include src="loaf-test-fixtures/_logo.html"></include> --><include src="loaf-test-fixtures/_nav.html"></include><slot></slot></body></html>`);
-fixture("_nav.html", `<nav><include src="loaf-test-fixtures/_logo.html" /></nav>`);
+fixture("_nav.html", `<nav><loaf-include src="loaf-test-fixtures/_logo.html"></loaf-include></nav>`);
 fixture("_logo.html", `<b>LOGO</b>`);
 fixture("page.html", `<head><title>Page</title><meta name="x" content="1"></head>\n<p>Hello</p>`);
 fixture("untitled.html", `<p>No title</p><svg><title>icon</title></svg>`);
@@ -17,7 +18,9 @@ fixture("full.html", `<!doctype html><html><head><title>Full</title></head><body
 fixture("loop.html", `<include src="loaf-test-fixtures/_loop.html"></include>`);
 fixture("_loop.html", `<include src="loaf-test-fixtures/_loop.html"></include>`);
 fixture("missing.html", `<include src="loaf-test-fixtures/_nope.html"></include>`);
-fixture("inner/_layout.html", `<html><head><title>Inner</title></head><body><main><slot /></main></body></html>`);
+fixture("inner/_layout.html", `<html><head><title>Inner</title></head><body><main><loaf-page></loaf-page></main></body></html>`);
+fixture("old/_layout.html", `<html><head><title>Old</title></head><body><slot /></body></html>`);
+fixture("old/page.html", `<include src="loaf-test-fixtures/_logo.html" />`);
 fixture("inner/page.html", `<p>Inside</p>`);
 afterAll(() => rmSync(FIXTURES, { recursive: true, force: true }));
 
@@ -46,7 +49,7 @@ const rawStatus = (path) =>
 
 test("serves pages from public/ with clean URLs", async () => {
   expect((await fetch(url("/"))).status).toBe(200);
-  expect(await text("/demo")).toContain("collection('todos')");
+  expect(await text("/demo")).toContain('<loaf-list name="todos">');
   expect((await fetch(url("/missing"))).status).toBe(404);
 });
 
@@ -84,6 +87,7 @@ test("layouts: wraps fragments, sets the title, nests includes", async () => {
   expect(full).toContain("<b>LOGO</b>");
 
   expect(await text("/loaf-test-fixtures/inner/page")).toContain("<title>Inner</title></head><body><main><p>Inside</p></main>");
+  expect(await text("/loaf-test-fixtures/old/page")).toContain("<body><b>LOGO</b></body>");
   expect(await text("/loaf-test-fixtures/missing")).toContain("<!-- include not found");
   expect((await fetch(url("/loaf-test-fixtures/loop"))).status).toBe(500);
 });

@@ -11,10 +11,12 @@
     <script src="/loaf.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
   </head>
-  <!-- Pages without their own html tag are placed at the slot below. -->
   <body class="flex min-h-screen flex-col bg-base-200">
-    <include src="_header.html"></include>
-    <div class="flex-1"><slot></slot></div>
-    <include src="_footer.html"></include>
+    <loaf-include src="_header.html"></loaf-include>
+    <!-- Each page goes here, in a centered column. -->
+    <main class="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 p-6">
+      <loaf-page></loaf-page>
+    </main>
+    <loaf-include src="_footer.html"></loaf-include>
   </body>
 </html>
