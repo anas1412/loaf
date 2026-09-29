@@ -39,6 +39,42 @@ async function api(method, url, body) {
   return data;
 }
 
+// One shared state per collection name, loaded once per page.
+const collections = {};
+
+function sharedCollection(name) {
+  if (!collections[name]) {
+    const state = (collections[name] = Alpine.reactive({ items: [], loading: true, error: null, saving: false }));
+    attempt(state, async () => (state.items = await api("GET", `/api/${name}`))).then(() => (state.loading = false));
+  }
+  return collections[name];
+}
+
+// Runs an API call and puts any error message in state.error.
+async function attempt(state, action) {
+  state.error = null;
+  try {
+    await action();
+  } catch (err) {
+    state.error = err.message;
+  }
+}
+
+// A form's named fields as an object. Checkboxes become true/false and number inputs become numbers.
+function formValues(form) {
+  const data = {};
+  for (const field of form.elements) {
+    if (!field.name || field.disabled || ["submit", "button", "reset", "file"].includes(field.type)) continue;
+    if (field.type === "checkbox") data[field.name] = field.checked;
+    else if (field.type === "radio") {
+      if (field.checked) data[field.name] = field.value;
+    }
+    else if (field.type === "number" || field.type === "range") data[field.name] = field.value === "" ? null : Number(field.value);
+    else data[field.name] = field.value;
+  }
+  return data;
+}
+
 document.addEventListener("alpine:init", () => {
   Alpine.data("themePicker", () => ({
     init() {
@@ -62,45 +98,47 @@ document.addEventListener("alpine:init", () => {
   }));
 
   // x-data="collection('todos')" gives you items, add(), update() and remove() for /api/todos.
-  Alpine.data("collection", (name) => ({
-    items: [],
-    loading: true,
-    error: null,
+  // Every collection('todos') on the page shares the same items.
+  Alpine.data("collection", (name) => {
+    const state = sharedCollection(name);
+    return {
+      get items() {
+        return state.items;
+      },
+      get loading() {
+        return state.loading;
+      },
+      get error() {
+        return state.error;
+      },
+      get saving() {
+        return state.saving;
+      },
 
-    async init() {
-      await this.run(async () => (this.items = await api("GET", `/api/${name}`)));
-      this.loading = false;
-    },
+      // add({ text: "hi" }), or add($el) on a <form> to save its named fields and clear it.
+      async add(data) {
+        if (state.saving) return; // a second click while saving would save twice
+        const form = data instanceof HTMLFormElement ? data : null;
+        if (form) data = formValues(form);
+        state.saving = true;
+        await attempt(state, async () => {
+          state.items.unshift(await api("POST", `/api/${name}`, data));
+          form?.reset();
+        });
+        state.saving = false;
+      },
 
-    // add({ text: "hi" }), or add($el) on a <form> to save its named inputs and clear it.
-    async add(data) {
-      const form = data instanceof HTMLFormElement ? data : null;
-      if (form) data = Object.fromEntries(new FormData(form));
-      await this.run(async () => {
-        this.items.unshift(await api("POST", `/api/${name}`, data));
-        form?.reset();
-      });
-    },
+      // update(item, { done: true }) changes only the fields you pass.
+      async update(item, changes) {
+        await attempt(state, async () => Object.assign(item, await api("PATCH", `/api/${name}/${item.id}`, changes)));
+      },
 
-    // update(item, { done: true }) changes only the fields you pass.
-    async update(item, changes) {
-      await this.run(async () => Object.assign(item, await api("PATCH", `/api/${name}/${item.id}`, changes)));
-    },
-
-    async remove(item) {
-      await this.run(async () => {
-        await api("DELETE", `/api/${name}/${item.id}`);
-        this.items = this.items.filter((i) => i.id !== item.id);
-      });
-    },
-
-    async run(action) {
-      this.error = null;
-      try {
-        await action();
-      } catch (err) {
-        this.error = err.message;
-      }
-    },
-  }));
+      async remove(item) {
+        await attempt(state, async () => {
+          await api("DELETE", `/api/${name}/${item.id}`);
+          state.items = state.items.filter((i) => i.id !== item.id);
+        });
+      },
+    };
+  });
 });
